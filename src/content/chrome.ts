@@ -1,0 +1,71 @@
+/**
+ * Client-safe copy: UI chrome, intro lines, display name.
+ * Client components may import this file. Do not import content.ts from clients —
+ * that pulls projects, stack data and site-url into the first-load bundle.
+ */
+export const chrome = {
+  siteName: 'Ruman Malik',
+  shortName: 'Ruman',
+  introLines: [
+    "Hi, I'm Ruman.",
+    'I build AI that ships.',
+    'Forecasting models, LLM systems, and the plumbing that keeps them running.',
+  ] as const,
+  ui: {
+    player: 'PLAYER 01',
+    classLabel: 'CLASS: AI ENGINEER',
+    openToRoles: 'OPEN TO ROLES',
+    notOpenToRoles: 'NOT LOOKING RIGHT NOW',
+    pressStart: '> PRESS START',
+    continueTag: '> CONTINUE?',
+    seeMyWork: 'SEE MY WORK',
+    resume: 'RESUME',
+    github: 'GITHUB',
+    linkedin: 'LINKEDIN',
+    episode: 'EP.',
+    problem: 'PROBLEM',
+    result: 'RESULT',
+    private: 'PRIVATE',
+    kinds: { company: 'COMPANY', university: 'UNIVERSITY', personal: 'PERSONAL' },
+    links: { live: 'Live', code: 'Code', paper: 'Paper' },
+    present: 'PRESENT',
+    letsTalk: "Let's talk ->",
+    copyEmail: 'COPY EMAIL',
+    copied: 'COPIED',
+    copyFailed: 'SELECT AND COPY',
+    skipToContent: 'Skip to content',
+    themeToggle: { label: 'Dark theme' },
+    nav: { ariaLabel: 'Site sections', mobileAriaLabel: 'Site sections' },
+    sections: {
+      work: 'Work',
+      experience: 'Experience',
+      stack: 'Stack',
+      writing: 'Writing',
+      contact: 'Contact',
+    },
+    navLabels: {
+      work: 'WORK',
+      experience: 'EXPERIENCE',
+      stack: 'STACK',
+      writing: 'WRITING',
+      contact: 'CONTACT',
+    },
+    intro: {
+      loading: 'LOADING',
+      portfolio: 'PORTFOLIO / 2026',
+      skip: 'SKIP >>',
+      clickToContinue: 'CLICK ANYWHERE TO CONTINUE',
+      press: 'PRESS',
+      enter: 'ENTER',
+      dialogLabel: 'Welcome sequence. Press Escape to skip.',
+    },
+    notFound: {
+      code: '404',
+      title: 'Page not found.',
+      body: 'The page you were looking for does not exist or has moved.',
+      home: 'BACK HOME',
+    },
+    footer: { rights: 'All rights reserved.' },
+    avatarAlt: 'Illustrated avatar of Ruman Malik',
+  },
+} as const;

@@ -1,0 +1,119 @@
+{
+  "basics": {
+    "name": "Ruman Malik",
+    "title": "Software Engineer | Full-Stack · ML",
+    "location": "Lahore, Pakistan",
+    "email": "rumanmlk123@gmail.com",
+    "linkedin": "linkedin.com/in/ruman-malik",
+    "github": "github.com/rumanmlk",
+    "website": ""
+  },
+  "summary": "Software engineer at ExD shipping production demand forecasting (PythinQ: FastAPI, React, LightGBM, PostgreSQL) and multi-agent LLM systems (Omnix: Django, 4 LLM providers).",
+  "experience": [
+    {
+      "company": "Excellence Delivered (ExD)",
+      "role": "Associate Software Engineer",
+      "location": "Lahore, Pakistan",
+      "start": "Mar 2026",
+      "end": "Present",
+      "projects": [
+        {
+          "name": "PythinQ",
+          "stack": "FastAPI, React/TypeScript, Vite, PostgreSQL, LightGBM, Optuna, Docker",
+          "start": "Mar 2026",
+          "end": "Present",
+          "bullets": [
+            "Shipped a 4-grain daily demand-forecasting product on about 5M sales rows so planners upload, train, forecast, and review a calendar-year holdout in one UI.",
+            "Routed models by demand shape: Huber LightGBM globally, a quantile specialist for high-variance Material SKUs, and two-stage occurrence/magnitude models for 10,000+ sparse series; Optuna with 7-fold walk-forward on lag, calendar, event, and weather features.",
+            "Implemented a Medallion PostgreSQL store, viewer/analyst/admin RBAC, and a Postgres-backed async worker so ingest, training, and multi-day forecasts keep running after the HTTP request returns.",
+            "Added predecessor SKU maps that blend history into new packs without merging identities. CI (pytest, Ruff, basedpyright) catches missing weather/events, split-mode errors, and train/serve schema drift before deployment."
+          ]
+        },
+        {
+          "name": "Omnix AI",
+          "stack": "Django, PostgreSQL, OpenAI, Anthropic, Gemini, xAI",
+          "start": "Jun 2026",
+          "end": "Present",
+          "bullets": [
+            "Implemented one LLM routing layer across 4 providers (OpenAI, Anthropic, Gemini, xAI) with primary/fallback pairs and retries, so rate limits or provider outages fail over without aborting the panel.",
+            "Rebuilt panel creation and debate launch as guided wizards, enforcing Super Expert + 3 to 9 expert rosters and a model assignment for every adviser before a debate can launch.",
+            "Moved debate start/continue, persona generation, and library batch work onto an async worker with per-user job locks so multi-minute runs survive HTTP timeouts."
+          ]
+        }
+      ]
+    },
+    {
+      "company": "Core Edge Solutions",
+      "role": "Full Stack Developer (Next.js)",
+      "location": "Lahore, Pakistan",
+      "start": "Dec 2025",
+      "end": "Feb 2026",
+      "bullets": [
+        "Built a multi-tenant eCommerce platform with Next.js and PostgreSQL (isolated storefronts/admin on shared infrastructure, plus single-tenant mode) and a pluggable upload layer (local filesystem and MinIO).",
+        "Set up GitHub Actions to build, test, and deploy to the dev environment on every push, with manual promotion to staging/main."
+      ]
+    },
+    {
+      "company": "TAG Solutions (TAGS)",
+      "role": "Python Intern",
+      "location": "Lahore, Pakistan",
+      "start": "Sep 2025",
+      "end": "Oct 2025",
+      "bullets": [
+        "Built and deployed a full-stack app (React, Node.js, MongoDB Atlas) with Docker and GitHub Actions to Docker Hub and Render; converted Django advertisement-marketplace pages to a Django + React (Vite) hybrid.",
+        "Tracked performance and reliability with Loki, Prometheus and Grafana."
+      ]
+    },
+    {
+      "company": "Ebryx",
+      "role": "Machine Learning Intern",
+      "location": "Lahore, Pakistan",
+      "start": "Jun 2024",
+      "end": "Sep 2024",
+      "bullets": [
+        "Built a DGA (Domain Generation Algorithm) detection system using DeepD2V embeddings on 200k domain records, reaching 0.94 holdout accuracy and outperforming n-gram and reputation baselines."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Rice Quality Check (FYP)",
+      "stack": "Computer Vision, FastAPI, React, MongoDB",
+      "start": "Aug 2024",
+      "end": "Apr 2025",
+      "bullets": [
+        "Built an AI system in a 3-member team to classify 8 Pakistani rice varieties and detect adulteration, reaching 92% average accuracy across 6 fine-tuned models on 10,000+ grain images."
+      ]
+    },
+    {
+      "name": "Lexio AI Legal Counsel",
+      "stack": "RAG, LangChain, FAISS, Streamlit, Ollama, Groq",
+      "start": "Feb 2025",
+      "end": "Apr 2025",
+      "bullets": [
+        "Built document-grounded legal Q&A: a FAISS RAG pipeline answers only from the uploaded file and declines when the answer is not present."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "school": "FAST National University of Computer and Emerging Sciences (FAST-NUCES)",
+      "degree": "BS Computer Science",
+      "location": "Lahore, Pakistan",
+      "start": "Aug 2021",
+      "end": "Jun 2025"
+    }
+  ],
+  "skills": [
+    { "label": "Languages", "items": "Python, TypeScript, JavaScript, SQL" },
+    { "label": "Backend", "items": "FastAPI, Django, SQLAlchemy, Node.js" },
+    { "label": "Frontend", "items": "React, Next.js, Vite, Tailwind CSS" },
+    { "label": "Databases", "items": "PostgreSQL, MongoDB" },
+    {
+      "label": "AI / ML",
+      "items": "LightGBM, Optuna, pandas, scikit-learn, LangChain, RAG, FAISS"
+    },
+    { "label": "LLM APIs", "items": "OpenAI, Anthropic, Gemini, xAI" },
+    { "label": "DevOps", "items": "Docker, GitHub Actions, pytest, Ruff, MinIO" }
+  ]
+}
