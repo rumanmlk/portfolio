@@ -1,6 +1,5 @@
 import { Avatar } from '@/components/avatar/Avatar';
 import { Nav } from '@/components/shell/Nav';
-import { StatusPanel } from '@/components/shell/StatusPanel';
 import { ThemeToggle } from '@/components/shell/ThemeToggle';
 import { content, getSections } from '@/content/content';
 
@@ -17,7 +16,6 @@ export function MobileHeader() {
         <Avatar placement="mobile" />
         {/* The sidebar h1 is display:none below 1024px, so this is the page h1 on mobile. */}
         <h1 className="mobile-name">{content.site.name}</h1>
-        <StatusPanel compact />
         <ThemeToggle size="small" />
       </div>
       <Nav items={sections} variant="strip" />

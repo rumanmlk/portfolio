@@ -94,10 +94,6 @@ export const content = {
     resume: '/resume.pdf?v=4',
   },
 
-  status: {
-    openToRoles: true,
-  },
-
   hero: {
     lines: ['I build AI', 'that ships.'],
     pitch:
@@ -315,7 +311,6 @@ type ContentShape = {
     keywords: readonly string[];
   };
   socials: { github: string; linkedin: string; resume: string };
-  status: { openToRoles: boolean };
   hero: { lines: readonly string[]; pitch: string };
   intro: { lines: readonly string[] };
   projects: Project[];

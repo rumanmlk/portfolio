@@ -1,6 +1,5 @@
 import { Avatar } from '@/components/avatar/Avatar';
 import { Nav } from '@/components/shell/Nav';
-import { StatusPanel } from '@/components/shell/StatusPanel';
 import { ThemeToggle } from '@/components/shell/ThemeToggle';
 import { Reveal, RevealPop } from '@/components/ui/Reveal';
 import { Sticker } from '@/components/ui/Sticker';
@@ -30,10 +29,6 @@ export function Sidebar() {
         </div>
 
         <div className="sidebar-rest">
-          <Reveal delay={0.15}>
-            <StatusPanel />
-          </Reveal>
-
           <Reveal delay={0.2}>
             <Nav items={sections} variant="sidebar" />
           </Reveal>

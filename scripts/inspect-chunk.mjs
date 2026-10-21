@@ -18,7 +18,6 @@ const keys = [
   'example.com',
   'lenis',
   'three',
-  'OPEN TO ROLES',
   'COPY EMAIL',
   'Skip to content',
   'NEXT_PUBLIC',

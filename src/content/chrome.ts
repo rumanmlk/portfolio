@@ -14,8 +14,6 @@ export const chrome = {
   ui: {
     player: 'PLAYER 01',
     classLabel: 'CLASS: AI ENGINEER',
-    openToRoles: 'OPEN TO ROLES',
-    notOpenToRoles: 'NOT LOOKING RIGHT NOW',
     pressStart: '> PRESS START',
     continueTag: '> CONTINUE?',
     seeMyWork: 'SEE MY WORK',

@@ -61,6 +61,7 @@ export default function ResumeDialog({ request }: Props) {
     <dialog
       ref={dialog}
       className="resume-dialog"
+      data-lenis-prevent
       aria-labelledby="resume-dialog-title"
       onClose={onClose}
       onClick={(e) => {
