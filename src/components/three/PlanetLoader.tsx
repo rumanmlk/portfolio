@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 
+import { StaticPlanet } from '@/components/three/StaticPlanet';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { features } from '@/content/features';
 import {
@@ -15,12 +16,11 @@ import {
 } from '@/lib/device';
 import { onIntroDone } from '@/lib/intro-state';
 
-/** Three.js lives in its own chunk; nothing of it is in the initial bundle (B12). */
-const PointCloud = dynamic(() => import('@/components/three/PointCloud'), { ssr: false });
+/** Three.js lives in its own chunk; nothing of it is in the initial bundle. */
+const Planet = dynamic(() => import('@/components/three/Planet'), { ssr: false });
 
 function eligible(): boolean {
-  if (!features.pointCloud) return false;
-  if (prefersReducedMotion()) return false;
+  if (!features.planet) return false;
   if (window.innerWidth < 1024) return false;
   if (saveDataEnabled()) return false;
   if (isLowEndDevice()) return false;
@@ -28,19 +28,17 @@ function eligible(): boolean {
   return true;
 }
 
-function StaticPattern() {
-  return <div className="hero-cloud-static" aria-hidden="true" />;
-}
-
 /**
  * Mounts the 3D scene only after the intro finished and the browser is idle,
- * and only on capable desktop devices. Everything else gets the static dots.
+ * and only on capable desktop devices. Everything else keeps the CSS planet.
  */
-export function PointCloudLoader() {
-  const [ready, setReady] = useState(false);
-  const [ok, setOk] = useState(false);
+export function PlanetLoader() {
+  // null until the intro is done and the browser is idle, then whether the 3D scene may run.
+  const [ok, setOk] = useState<boolean | null>(null);
   const [lost, setLost] = useState(false);
   const [running, setRunning] = useState(true);
+  const [reduced, setReduced] = useState(false);
+  const ready = ok !== null;
   const host = useRef<HTMLDivElement>(null);
 
   // Wait for the intro, then for idle time, then evaluate eligibility.
@@ -49,7 +47,7 @@ export function PointCloudLoader() {
     const offIntro = onIntroDone(() => {
       cancelIdle = whenIdle(() => {
         setOk(eligible());
-        setReady(true);
+        setReduced(prefersReducedMotion());
       }, 2000);
     });
     return () => {
@@ -70,7 +68,7 @@ export function PointCloudLoader() {
       });
     };
     window.addEventListener('resize', onResize, { passive: true });
-    const offReduced = onReducedMotionChange(() => setOk(eligible()));
+    const offReduced = onReducedMotionChange(setReduced);
     return () => {
       window.removeEventListener('resize', onResize);
       offReduced();
@@ -80,7 +78,7 @@ export function PointCloudLoader() {
 
   // Pause when the hero is off screen or the tab is hidden.
   useEffect(() => {
-    if (!ready || !ok) return;
+    if (!ok) return;
     const el = host.current;
     let visible = true;
     let tabVisible = !document.hidden;
@@ -102,18 +100,18 @@ export function PointCloudLoader() {
       io.disconnect();
       document.removeEventListener('visibilitychange', onVis);
     };
-  }, [ready, ok]);
+  }, [ok]);
 
-  const show3d = ready && ok && !lost;
+  const show3d = ok === true && !lost;
 
   return (
-    <div ref={host} className="point-cloud-host" style={{ position: 'absolute', inset: 0 }}>
+    <div ref={host} className="planet-host">
       {show3d ? (
-        <ErrorBoundary fallback={<StaticPattern />}>
-          <PointCloud running={running} onContextLost={() => setLost(true)} />
+        <ErrorBoundary fallback={<StaticPlanet />}>
+          <Planet running={running} reduced={reduced} onContextLost={() => setLost(true)} />
         </ErrorBoundary>
       ) : (
-        <StaticPattern />
+        <StaticPlanet />
       )}
     </div>
   );

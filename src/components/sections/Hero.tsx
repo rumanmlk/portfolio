@@ -1,4 +1,4 @@
-import { PointCloudLoader } from '@/components/three/PointCloudLoader';
+import { PlanetLoader } from '@/components/three/PlanetLoader';
 import { Button } from '@/components/ui/Button';
 import { Sparkle } from '@/components/ui/Sparkle';
 import { Sticker } from '@/components/ui/Sticker';
@@ -27,10 +27,6 @@ export function Hero() {
       <div className="hero-sparkles" aria-hidden="true">
         <Sparkle size={30} fill="yellow" className="hero-sparkle-a" />
         <Sparkle size={20} fill="sky" className="hero-sparkle-b" />
-      </div>
-
-      <div className="hero-cloud point-cloud" aria-hidden="true">
-        <PointCloudLoader />
       </div>
 
       <div className="hero-content">
@@ -64,10 +60,14 @@ export function Hero() {
           <Button href="#work" variant="accent">
             {ui.seeMyWork}
           </Button>
-          <Button href={socials.resume} variant="surface" external>
+          <Button href={socials.resume} variant="surface" external data-resume-trigger="">
             {ui.resume}
           </Button>
         </div>
+      </div>
+
+      <div className="hero-planet" aria-hidden="true">
+        <PlanetLoader />
       </div>
     </section>
   );

@@ -322,7 +322,7 @@ type ContentShape = {
   experience: Role[];
   stack: readonly StackGroup[];
   writing: Post[];
-  features: { intro: boolean; pointCloud: boolean; smoothScroll: boolean };
+  features: { intro: boolean; planet: boolean; smoothScroll: boolean };
   ui: Record<string, unknown>;
 };
 

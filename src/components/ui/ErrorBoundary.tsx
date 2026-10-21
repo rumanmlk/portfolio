@@ -13,7 +13,7 @@ type Props = {
 type State = { failed: boolean };
 
 /**
- * Isolates non-critical features (intro, avatar motion, point cloud, smooth
+ * Isolates non-critical features (intro, avatar motion, planet, smooth
  * scroll). If any of them throws, it unmounts and the site keeps working.
  */
 export class ErrorBoundary extends Component<Props, State> {

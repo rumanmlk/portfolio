@@ -1,3 +1,4 @@
+import { ResumeFolder } from '@/components/resume/ResumeFolder';
 import { CopyEmail } from '@/components/sections/CopyEmail';
 import { Reveal, RevealPop } from '@/components/ui/Reveal';
 import { Sticker } from '@/components/ui/Sticker';
@@ -18,32 +19,35 @@ export function Contact() {
         {ui.sections.contact}
       </h2>
 
-      <Reveal delay={0.05}>
-        <a href={`mailto:${site.email}`} className="contact-link display themed">
-          {ui.letsTalk}
-        </a>
-      </Reveal>
+      <div className="contact-grid">
+        <div className="contact-main">
+          <Reveal delay={0.05}>
+            <a href={`mailto:${site.email}`} className="contact-link display themed">
+              {ui.letsTalk}
+            </a>
+          </Reveal>
 
-      <Reveal className="contact-row" delay={0.1}>
-        <CopyEmail email={site.email} />
-        <ul className="contact-links" aria-label="Profiles and resume">
-          <li>
-            <a href={socials.github} target="_blank" rel="noopener noreferrer">
-              {ui.github}
-            </a>
-          </li>
-          <li>
-            <a href={socials.linkedin} target="_blank" rel="noopener noreferrer">
-              {ui.linkedin}
-            </a>
-          </li>
-          <li>
-            <a href={socials.resume} target="_blank" rel="noopener noreferrer">
-              {ui.resume}
-            </a>
-          </li>
-        </ul>
-      </Reveal>
+          <Reveal className="contact-row" delay={0.1}>
+            <CopyEmail email={site.email} />
+            <ul className="contact-links" aria-label="Profiles">
+              <li>
+                <a href={socials.github} target="_blank" rel="noopener noreferrer">
+                  {ui.github}
+                </a>
+              </li>
+              <li>
+                <a href={socials.linkedin} target="_blank" rel="noopener noreferrer">
+                  {ui.linkedin}
+                </a>
+              </li>
+            </ul>
+          </Reveal>
+        </div>
+
+        <Reveal className="contact-folder" delay={0.15}>
+          <ResumeFolder href={socials.resume} />
+        </Reveal>
+      </div>
     </section>
   );
 }

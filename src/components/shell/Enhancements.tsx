@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
+import { ResumeTriggers } from '@/components/resume/ResumeTriggers';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { whenIdle } from '@/lib/device';
 
@@ -16,13 +17,16 @@ export function Enhancements() {
   useEffect(() => whenIdle(() => setReady(true)), []);
 
   return (
-    <ErrorBoundary>
-      {ready ? (
-        <>
-          <SmoothScroll />
-          <StackTips />
-        </>
-      ) : null}
-    </ErrorBoundary>
+    <>
+      <ResumeTriggers />
+      <ErrorBoundary>
+        {ready ? (
+          <>
+            <SmoothScroll />
+            <StackTips />
+          </>
+        ) : null}
+      </ErrorBoundary>
+    </>
   );
 }

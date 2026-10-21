@@ -52,3 +52,20 @@ next-env.d.ts
 # local spec and editor rules
 /prompt.md
 /.cursor/rules/
+
+# AI agent files
+/.claude/
+/.cursor/
+/.cursorrules
+/.cursorignore
+/.windsurf/
+/.windsurfrules
+/.aider*
+/.continue/
+/.codex/
+/.gemini/
+/.github/copilot-instructions.md
+/CLAUDE.md
+/CLAUDE.local.md
+/GEMINI.md
+/DESIGN.md
