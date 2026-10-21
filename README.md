@@ -40,7 +40,6 @@ Every word on the site lives in **`src/content/content.ts`** (projects, experien
 
 - `site` — name, title, description (used for SEO), email, location, employer, keywords.
 - `socials` — GitHub, LinkedIn and the resume path.
-- `status` — `openToRoles` drives the red square next to OPEN TO ROLES.
 - `hero.lines` — the headline. The **last word of the last line** becomes the red accent word with the yellow highlight.
 - `hero.pitch` — the paragraph under the headline.
 - `intro.lines` — the dialogue typed out in the entry sequence. Two or three short lines work best.
@@ -99,7 +98,7 @@ src/
   app/            layout, page, not-found, globals.css, metadata routes (OG image, icons, sitemap, robots, manifest)
   content/        content.ts (all copy), stack-icons.generated.ts, resume.json
   components/
-    shell/        Sidebar, MobileHeader, Nav, ThemeToggle, StatusPanel, Footer, Boot, SmoothScroll, JsonLd
+    shell/        Sidebar, MobileHeader, Nav, ThemeToggle, Footer, Boot, SmoothScroll, JsonLd
     sections/     Hero, Work, ProjectCard, WorkList, Experience, Stack, StackTips, Writing, Contact, CopyEmail
     avatar/       AvatarSvg, AvatarTile, Avatar, AvatarMotion, useAvatarMotion
     intro/        Intro, IntroSequence, IntroLoading, IntroScene, useIntroState

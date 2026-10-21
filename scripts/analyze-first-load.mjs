@@ -14,7 +14,6 @@ const keys = [
   'site-url',
   'lenis',
   'three',
-  'OPEN TO ROLES',
   'DeepD2V',
   'clipboard',
   'Skip to content',
