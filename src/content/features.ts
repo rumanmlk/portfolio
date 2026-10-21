@@ -4,7 +4,7 @@
  */
 export const features = {
   intro: true,
-  pointCloud: true,
+  planet: true,
   smoothScroll: true,
 } as const;
 

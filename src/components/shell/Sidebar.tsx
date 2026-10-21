@@ -51,7 +51,12 @@ export function Sidebar() {
                 </a>
               </li>
               <li>
-                <a href={socials.resume} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={socials.resume}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-resume-trigger=""
+                >
                   {ui.resume}
                 </a>
               </li>

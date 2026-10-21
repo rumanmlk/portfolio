@@ -1,6 +1,6 @@
 # Ruman Malik — portfolio
 
-Single-page portfolio for an AI engineer. Pixel stickers, 3px ink borders, hard offset shadows, and halftone dots, with plain developer English, light theme by default, dark theme opt-in, an entry sequence, an illustrated avatar that reacts to the cursor and scroll, and a lazy hero point cloud.
+Single-page portfolio for an AI engineer. Pixel stickers, 3px ink borders, hard offset shadows, and halftone dots, with plain developer English, light theme by default, dark theme opt-in, an entry sequence, an illustrated avatar that reacts to the cursor and scroll, and a lazy halftone planet in the hero.
 
 Built with Next.js 16 (App Router, Cache Components), React 19, TypeScript strict, Tailwind CSS 4, Motion, Lenis, React Three Fiber, Playwright. No UI kit, no CMS, no backend, no contact form (mailto only).
 
@@ -48,7 +48,7 @@ Every word on the site lives in **`src/content/content.ts`** (projects, experien
 - `experience` — real jobs and internships only (university projects belong in `projects`). Up to three bullets are rendered per role. Use years for `start`/`end`; `end: 'Present'` renders as `PRESENT`.
 - `stack` — groups of tools. Each item has a `name`, an optional simple-icons `icon` slug, and an optional `mono` label when the tool has no official logo. A group with no items is not rendered. After changing slugs, run `pnpm stack:icons` (writes colors plus the cached `/stack-sprite.svg`). Logos are Simple Icons; trademarks belong to their owners.
 - `writing` — leave empty and the Writing section and its nav item are omitted.
-- `features` — `intro`, `pointCloud`, `smoothScroll` switches.
+- `features` — `intro`, `planet`, `smoothScroll` switches.
 - `ui` — the locked UI wording (`PLAYER 01`, `> PRESS START`, section titles…). Change with care.
 
 Long values, empty arrays and missing optional fields are all handled; the layout never breaks.
@@ -103,7 +103,7 @@ src/
     sections/     Hero, Work, ProjectCard, WorkList, Experience, Stack, StackTips, Writing, Contact, CopyEmail
     avatar/       AvatarSvg, AvatarTile, Avatar, AvatarMotion, useAvatarMotion
     intro/        Intro, IntroSequence, IntroLoading, IntroScene, useIntroState
-    three/        PointCloud, PointCloudLoader
+    three/        Planet, PlanetLoader, StaticPlanet
     ui/           Button, Tag, Sticker, Sparkle, Reveal, ErrorBoundary
   lib/            motion, device, storage, theme, scroll, intro-state, animate, reveal, env, head-scripts
   assets/fonts/   Anton + JetBrains Mono for the OG image, DotGothic16 latin slice (all OFL)

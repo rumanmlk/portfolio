@@ -1,15 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { devices, expect, test, type Page } from '@playwright/test';
 
-async function skipIntro(page: Page) {
-  await page.addInitScript(() => {
-    try {
-      sessionStorage.setItem('intro-seen', '1');
-    } catch {
-      /* ignore */
-    }
-  });
-}
+import { skipIntro } from './helpers';
 
 async function audit(page: Page) {
   const results = await new AxeBuilder({ page })

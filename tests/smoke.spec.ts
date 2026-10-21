@@ -2,18 +2,9 @@ import { devices, expect, test, type Page } from '@playwright/test';
 
 import { content } from '../src/content/content';
 
-const INTRO = '.intro';
+import { skipIntro } from './helpers';
 
-/** Mark the entry sequence as already seen for this session. */
-async function skipIntro(page: Page) {
-  await page.addInitScript(() => {
-    try {
-      sessionStorage.setItem('intro-seen', '1');
-    } catch {
-      /* ignore */
-    }
-  });
-}
+const INTRO = '.intro';
 
 async function waitForScene(page: Page) {
   await expect(page.locator('.intro-scene')).toBeVisible({ timeout: 10_000 });

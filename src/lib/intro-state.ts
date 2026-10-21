@@ -1,6 +1,6 @@
 /**
  * Shared "is the entry sequence still covering the page?" state.
- * Reveals, Lenis and the point cloud wait for `markIntroDone()`.
+ * Reveals, Lenis and the planet waits for `markIntroDone()`.
  */
 
 const INTRO_FAILSAFE_MS = 6500;

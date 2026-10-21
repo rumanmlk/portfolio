@@ -66,17 +66,23 @@ export function isLowEndDevice(): boolean {
   }
 }
 
+let webglSupport: boolean | undefined;
+
+/** Probed once: capability cannot change, and each probe creates a real context. */
 export function hasWebGL(): boolean {
   if (!isBrowser()) return false;
+  if (webglSupport !== undefined) return webglSupport;
   try {
     const canvas = document.createElement('canvas');
     const gl =
       canvas.getContext('webgl2', { failIfMajorPerformanceCaveat: true }) ??
       canvas.getContext('webgl', { failIfMajorPerformanceCaveat: true });
-    return Boolean(gl);
+    webglSupport = Boolean(gl);
+    gl?.getExtension('WEBGL_lose_context')?.loseContext();
   } catch {
-    return false;
+    webglSupport = false;
   }
+  return webglSupport;
 }
 
 export function viewportWidth(): number {

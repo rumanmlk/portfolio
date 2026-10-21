@@ -21,6 +21,8 @@ export default defineConfig({
     baseURL,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
+    // Software WebGL would load every worker; only tests/planet.spec.ts re-enables it.
+    launchOptions: { args: ['--disable-3d-apis'] },
   },
   projects: [
     {

@@ -4,11 +4,7 @@ import { join } from 'node:path';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 
-const PHONE_PATTERNS = [
-  /\+?92[\s-]?3\d\d[\s-]?\d{7}/,
-  /\b03\d\d[\s-]?\d{7}\b/,
-  /\+?\d[\d\s().-]{8,}\d/,
-];
+import { PHONE_PATTERNS } from '../scripts/phone-patterns.mjs';
 
 const FAIL_MSG = 'Replace public/resume.pdf with a version without your phone number.';
 
