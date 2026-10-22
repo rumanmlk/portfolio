@@ -112,15 +112,17 @@ export function IntroScene({ lines, avatarRef, skipRef, onEnter, onSkip, exiting
     if (exiting) return;
     const s = twRef.current;
     const text = lines[s.line] ?? '';
+    const last = s.line >= lines.length - 1;
+    // Entering is available immediately on the last line, mid-typing included.
+    if (last) {
+      onEnter();
+      return;
+    }
     if (s.shown < text.length) {
       setTw({ ...s, shown: text.length });
       return;
     }
-    if (s.line < lines.length - 1) {
-      setTw({ line: s.line + 1, shown: 0, done: false });
-      return;
-    }
-    onEnter();
+    setTw({ line: s.line + 1, shown: 0, done: false });
   };
 
   useEffect(() => {

@@ -172,12 +172,18 @@ test.describe('theme', () => {
     await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#FFFBF2');
 
     const toggle = page
-      .getByRole('button', { name: content.ui.themeToggle.label })
+      .getByRole('switch', { name: content.ui.themeToggle.label })
       .locator('visible=true')
       .first();
+    await expect(toggle).toHaveAttribute('aria-checked', 'false');
+    await expect(toggle).toBeVisible();
     await toggle.click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    await expect(toggle).toHaveAttribute('aria-checked', 'true');
+    await toggle.press('Space');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+    await toggle.press('Enter');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#0B0B0C');
 
     await page.reload();

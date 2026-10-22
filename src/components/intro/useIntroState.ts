@@ -20,8 +20,7 @@ declare global {
 
 export type IntroPhase = 'loading' | 'scene' | 'exiting' | 'done';
 
-const MIN_LOADING_MS = 900;
-const MAX_LOADING_MS = 1800;
+const LOADING_MS = 600;
 const CROSSFADE_MS = 200;
 
 /** Same rules as the inline head script (B11), re-evaluated in JS. */
@@ -33,7 +32,7 @@ export function shouldShowIntro(): boolean {
     if (prefersReducedMotion()) return false;
     if (saveDataEnabled()) return false;
     if (window.innerHeight < 500) return false;
-    if (readStorage('session', INTRO_SEEN_KEY)) return false;
+    if (readStorage('local', INTRO_SEEN_KEY)) return false;
     // The head script may have decided "off" for a reason we cannot re-derive.
     if (document.documentElement.getAttribute('data-intro') === 'off') return false;
   } catch {
@@ -136,7 +135,7 @@ export function useIntroState({ onProgress }: Options) {
       'data-intro',
       phaseRef.current === 'exiting' ? 'done' : 'on',
     );
-    writeStorage('session', INTRO_SEEN_KEY, '1');
+    writeStorage('local', INTRO_SEEN_KEY, '1');
     if (phaseRef.current !== 'exiting') {
       lockScroll();
       claimIntro();
@@ -156,39 +155,26 @@ export function useIntroState({ onProgress }: Options) {
     });
   }, [go]);
 
-  // Real loading progress: fonts + document readiness, min 900ms, cap 1.8s.
+  // Fixed-length loading bar (LOADING_MS), independent of network state.
   useEffect(() => {
     if (phase !== 'loading') return;
     if (phaseRef.current === 'done') return;
 
     const t0 = performance.now();
-    let fonts = 0;
-    let doc = document.readyState === 'loading' ? 0 : 1;
     let timer = 0;
-
-    const fontsPromise =
-      typeof document.fonts?.ready?.then === 'function' ? document.fonts.ready : Promise.resolve();
-    fontsPromise.then(() => {
-      fonts = 1;
-    });
-    const onReady = () => {
-      doc = 1;
-    };
-    document.addEventListener('readystatechange', onReady);
-    window.addEventListener('load', onReady);
 
     // 10 Hz is enough for the bar; rAF (~60 Hz) inflated Lighthouse TBT.
     const tick = () => {
       const elapsed = performance.now() - t0;
-      const data = 0.15 + 0.5 * fonts + 0.35 * doc;
-      const byTime = Math.min(1, elapsed / MIN_LOADING_MS);
-      const forced = elapsed / MAX_LOADING_MS;
-      const p = Math.min(1, Math.max(Math.min(byTime, data), forced));
+      const p = Math.min(1, elapsed / LOADING_MS);
       onProgress(p);
-      if (p >= 1 && elapsed >= MIN_LOADING_MS) {
+      if (p >= 1) {
         window.clearInterval(timer);
         timer = 0;
-        window.setTimeout(() => go('scene'), CROSSFADE_MS / 2);
+        // Escape or a failsafe may have ended the loading phase during the crossfade.
+        window.setTimeout(() => {
+          if (phaseRef.current === 'loading') go('scene');
+        }, CROSSFADE_MS / 2);
       }
     };
     timer = window.setInterval(tick, 100);
@@ -196,8 +182,6 @@ export function useIntroState({ onProgress }: Options) {
 
     return () => {
       if (timer) window.clearInterval(timer);
-      document.removeEventListener('readystatechange', onReady);
-      window.removeEventListener('load', onReady);
     };
   }, [phase, go, onProgress]);
 
