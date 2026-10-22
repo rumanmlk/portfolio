@@ -77,7 +77,7 @@ test.describe('accessibility (axe-core)', () => {
   test('entry sequence dialog', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('.intro')).toBeVisible({ timeout: 10_000 });
-    // Loading screen is 0.9–1.8s; Firefox/WebKit can need longer before the scene mounts.
+    // Loading screen is 0.6s; Firefox/WebKit can need longer before the scene mounts.
     await expect(page.locator('.intro-scene')).toBeVisible({ timeout: 20_000 });
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa'])

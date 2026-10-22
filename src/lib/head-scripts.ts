@@ -13,12 +13,12 @@ export const themeScript = `(function(){var t='light';try{var s=localStorage.get
 
 /**
  * Decides whether the entry sequence shows. Skips for deep links, reduced
- * motion, data saver, landscape phones and returning visitors in the session.
+ * motion, data saver, landscape phones and returning visitors (first visit only).
  * When `enabled` is false (content.features.intro), always off.
  */
 export function getIntroScript(enabled: boolean): string {
   if (!enabled) {
     return `(function(){document.documentElement.setAttribute('data-intro','off');})();`;
   }
-  return `(function(){var on=true;try{var h=location.hash;if(h==='#inventory')h='#stack';if(h&&h.length>1)on=false;if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)on=false;var c=navigator.connection;if(c&&c.saveData)on=false;if(window.innerHeight<500)on=false;try{if(sessionStorage.getItem('${INTRO_SEEN_KEY}'))on=false;}catch(e){}}catch(e){on=false;}var d=document.documentElement;d.setAttribute('data-intro',on?'on':'off');if(!on)return;window.addEventListener('keydown',function(e){if(e.key!=='Escape'||d.getAttribute('data-intro')!=='on')return;e.preventDefault();e.stopPropagation();window.__introEscape=1;try{sessionStorage.setItem('${INTRO_SEEN_KEY}','1');}catch(err){}d.setAttribute('data-intro','done');d.style.overflow='';d.classList.remove('intro-avatar-hidden');var site=document.getElementById('site');if(site)site.removeAttribute('inert');if(typeof window.__skipIntro==='function')window.__skipIntro();},true);})();`;
+  return `(function(){var on=true;try{var h=location.hash;if(h==='#inventory')h='#stack';if(h&&h.length>1)on=false;if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)on=false;var c=navigator.connection;if(c&&c.saveData)on=false;if(window.innerHeight<500)on=false;try{if(localStorage.getItem('${INTRO_SEEN_KEY}'))on=false;}catch(e){}}catch(e){on=false;}var d=document.documentElement;d.setAttribute('data-intro',on?'on':'off');if(!on)return;window.addEventListener('keydown',function(e){if(e.key!=='Escape'||d.getAttribute('data-intro')!=='on')return;e.preventDefault();e.stopPropagation();window.__introEscape=1;try{localStorage.setItem('${INTRO_SEEN_KEY}','1');}catch(err){}d.setAttribute('data-intro','done');d.style.overflow='';d.classList.remove('intro-avatar-hidden');var site=document.getElementById('site');if(site)site.removeAttribute('inert');if(typeof window.__skipIntro==='function')window.__skipIntro();},true);})();`;
 }

@@ -7,7 +7,7 @@ export async function skipIntro(page: Page, extra?: () => void) {
   await page.addInitScript(
     ({ key }) => {
       try {
-        sessionStorage.setItem(key, '1');
+        localStorage.setItem(key, '1');
       } catch {
         /* ignore */
       }

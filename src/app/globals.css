@@ -287,6 +287,77 @@
     box-shadow: var(--shadow-box);
   }
 
+  /* Theme switch: "DARK MODE" label + square track; thumb slides, track turns yellow. */
+  .theme-toggle {
+    --tt-w: 54px;
+    --tt-h: 28px;
+    --tt-thumb: 16px;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0;
+    background: transparent;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .theme-toggle[data-size='small'] {
+    --tt-w: 46px;
+    --tt-h: 24px;
+    --tt-thumb: 12px;
+    gap: 8px;
+    min-height: 40px;
+  }
+
+  .theme-toggle-short {
+    display: none;
+  }
+
+  .theme-toggle-track {
+    position: relative;
+    width: var(--tt-w);
+    height: var(--tt-h);
+    border: 3px solid var(--line);
+    background: var(--surface);
+    box-shadow: var(--shadow-small);
+  }
+
+  .theme-toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: var(--tt-thumb);
+    height: var(--tt-thumb);
+    background: var(--ink);
+    transition: transform 0.2s var(--ease);
+  }
+
+  .theme-toggle[aria-checked='true'] .theme-toggle-track {
+    background: var(--yellow);
+  }
+
+  /* Track inner width minus thumb minus both 3px insets. */
+  .theme-toggle[aria-checked='true'] .theme-toggle-thumb {
+    transform: translateX(calc(var(--tt-w) - 6px - var(--tt-thumb) - 6px));
+  }
+
+  @media (max-width: 420px) {
+    .theme-toggle[data-size='small'] .theme-toggle-full {
+      display: none;
+    }
+
+    .theme-toggle[data-size='small'] .theme-toggle-short {
+      display: inline;
+    }
+  }
+
   /* Buttons: 3px border, 5px hard shadow, mono 14px medium. */
   .btn {
     display: inline-flex;

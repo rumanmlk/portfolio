@@ -6,11 +6,7 @@
 export const chrome = {
   siteName: 'Ruman Malik',
   shortName: 'Ruman',
-  introLines: [
-    "Hi, I'm Ruman.",
-    'I build AI that ships.',
-    'Forecasting models, LLM systems, and the plumbing that keeps them running.',
-  ] as const,
+  introLines: ["Hi, I'm Ruman. I build AI that ships."] as const,
   ui: {
     player: 'PLAYER 01',
     classLabel: 'CLASS: AI ENGINEER',
@@ -45,7 +41,7 @@ export const chrome = {
     copied: 'COPIED',
     copyFailed: 'SELECT AND COPY',
     skipToContent: 'Skip to content',
-    themeToggle: { label: 'Dark theme' },
+    themeToggle: { label: 'DARK MODE', short: 'DARK' },
     nav: { ariaLabel: 'Site sections', mobileAriaLabel: 'Site sections' },
     sections: {
       work: 'Work',
