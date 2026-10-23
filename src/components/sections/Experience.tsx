@@ -1,13 +1,29 @@
 import { Reveal, RevealLines } from '@/components/ui/Reveal';
-import { TagList } from '@/components/ui/Tag';
 import { content, type Role } from '@/content/content';
 
-function dates(role: Role) {
-  const end = role.end === 'Present' ? content.ui.present : role.end;
-  return role.start === end ? role.start : `${role.start} - ${end}`;
+/** 'YYYY-MM' to 'Mar 2026'. */
+function label(ym: string) {
+  return new Date(`${ym}-01`).toLocaleDateString('en-US', {
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
 }
 
-/** Real jobs and internships only; up to 3 bullets each (B7). */
+function Dates({ role }: { role: Role }) {
+  return (
+    <>
+      <time dateTime={role.start}>{label(role.start)}</time> {content.ui.dateRangeSeparator}{' '}
+      {role.end === 'Present' ? (
+        content.ui.present
+      ) : (
+        <time dateTime={role.end}>{label(role.end)}</time>
+      )}
+    </>
+  );
+}
+
+/** Real jobs and internships only; one short summary each, with the Work projects built there (B7). */
 export function Experience() {
   const roles = content.experience;
   if (roles.length === 0) return null;
@@ -23,19 +39,18 @@ export function Experience() {
         {roles.map((role, i) => (
           <Reveal as="li" key={`${role.company}-${i}`} className="experience-row">
             <p className="experience-dates mono">
-              <time>{dates(role)}</time>
+              <Dates role={role} />
             </p>
             <div className="experience-body">
               <h3 className="experience-role">{role.role}</h3>
               <p className="experience-company mono text-muted">{role.company}</p>
-              {role.bullets.length > 0 ? (
-                <ul className="experience-bullets">
-                  {role.bullets.slice(0, 3).map((b, j) => (
-                    <li key={j}>{b}</li>
-                  ))}
-                </ul>
+              <p className="experience-summary">{role.summary}</p>
+              {role.projects?.length ? (
+                <p className="experience-projects mono-sm">
+                  <span className="text-muted">{content.ui.projectsLabel}:</span>{' '}
+                  {role.projects.join(' / ')}
+                </p>
               ) : null}
-              <TagList items={role.stack} label={`Stack at ${role.company}`} className="mt-4" />
             </div>
           </Reveal>
         ))}

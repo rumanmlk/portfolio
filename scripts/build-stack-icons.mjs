@@ -13,6 +13,7 @@ const outPath = path.join(root, 'src', 'content', 'stack-icons.generated.ts');
 const spritePath = path.join(root, 'public', 'stack-sprite.svg');
 const iconsJsonPath = path.join(root, 'node_modules', 'simple-icons', 'data', 'simple-icons.json');
 const iconsDir = path.join(root, 'node_modules', 'simple-icons', 'icons');
+const extraPath = path.join(root, 'src', 'content', 'stack-icons.extra.json');
 
 const CREAM = 'F2EDE0';
 const INK = '14121F';
@@ -120,6 +121,23 @@ const items = readStackItems(source);
 const catalog = JSON.parse(readFileSync(iconsJsonPath, 'utf8'));
 const bySlug = new Map(catalog.map((icon) => [icon.slug, icon]));
 
+/** Slugs supplied by hand (brand-kit files, FAISS glyph) in stack-icons.extra.json. */
+const extraIcons = JSON.parse(readFileSync(extraPath, 'utf8'));
+const extraSlugs = new Set(Object.keys(extraIcons));
+for (const [slug, icon] of Object.entries(extraIcons)) {
+  const ok =
+    /^[0-9A-F]{6}$/.test(icon.hex ?? '') &&
+    /^[0-9A-F]{6}$/.test(icon.hexOnDark ?? '') &&
+    typeof icon.path === 'string' &&
+    icon.path.length > 0;
+  if (!ok) {
+    console.error(
+      `stack-icons.extra.json: "${slug}" needs hex, hexOnDark (6 hex digits) and a path.`,
+    );
+    process.exit(1);
+  }
+}
+
 const missing = [];
 const seen = new Set();
 const records = [];
@@ -129,7 +147,7 @@ for (const item of items) {
   seen.add(item.icon);
   const entry = bySlug.get(item.icon);
   if (!entry) {
-    if (!item.mono) missing.push(`${item.icon} (${item.name})`);
+    if (!item.mono && !extraSlugs.has(item.icon)) missing.push(`${item.icon} (${item.name})`);
     continue;
   }
   const svg = readFileSync(path.join(iconsDir, `${item.icon}.svg`), 'utf8');

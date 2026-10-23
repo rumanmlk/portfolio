@@ -8,7 +8,13 @@ import { prefersReducedMotion } from '@/lib/device';
 export type LenisLike = {
   scrollTo: (
     target: HTMLElement | number | string,
-    options?: { offset?: number; immediate?: boolean; lock?: boolean; duration?: number },
+    options?: {
+      offset?: number;
+      immediate?: boolean;
+      lock?: boolean;
+      duration?: number;
+      onComplete?: () => void;
+    },
   ) => void;
   stop: () => void;
   start: () => void;
@@ -50,8 +56,17 @@ export function scrollToSection(
   const reduced = prefersReducedMotion();
 
   if (lenis && !reduced) {
-    // Lenis 1.3 subtracts the target's scroll-margin-top itself.
-    lenis.scrollTo(target, { offset: 0 });
+    // Lenis 1.3 subtracts the target's scroll-margin-top itself. Sections use
+    // content-visibility: auto, so their real height can differ from the intrinsic
+    // estimate (WebKit lands ~450px short); re-aim until the heading is in place.
+    const instance = lenis;
+    let retries = 2;
+    const settle = () => {
+      const drift = target.getBoundingClientRect().top - sectionMargin(target);
+      if (Math.abs(drift) <= 2 || retries-- <= 0) return;
+      instance.scrollTo(target, { offset: 0, onComplete: settle });
+    };
+    instance.scrollTo(target, { offset: 0, onComplete: settle });
   } else {
     const top = target.getBoundingClientRect().top + window.scrollY - sectionMargin(target);
     window.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });

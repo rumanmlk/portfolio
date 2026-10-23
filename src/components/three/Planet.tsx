@@ -4,7 +4,7 @@
 /* eslint-disable react-hooks/immutability */
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { BackSide, Color, Vector3, type Group, type MeshBasicMaterial } from 'three';
 
 import { hasFinePointer } from '@/lib/device';
@@ -212,6 +212,22 @@ type Props = {
 
 /** Decorative only: pointer-events none, aria-hidden, low-power, dpr capped at 1.5. */
 export default function Planet({ running, reduced, onContextLost }: Props) {
+  // r3f force-loses the context when the canvas unmounts (e.g. window shrinks below the
+  // desktop breakpoint). That deliberate loss must not be reported as a real one, or the
+  // loader would give up on 3D for the rest of the session.
+  const alive = useRef(true);
+  const lostCb = useRef(onContextLost);
+  useEffect(() => {
+    lostCb.current = onContextLost;
+  }, [onContextLost]);
+  // Layout effect: its cleanup must run before r3f tears the renderer down.
+  useLayoutEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
+
   return (
     <Canvas
       className="planet-canvas"
@@ -236,7 +252,7 @@ export default function Planet({ running, reduced, onContextLost }: Props) {
         gl.setClearColor(0x000000, 0);
         gl.domElement.addEventListener('webglcontextlost', (e) => {
           e.preventDefault();
-          onContextLost();
+          if (alive.current) lostCb.current();
         });
       }}
     >

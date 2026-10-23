@@ -1,5 +1,6 @@
 import { PlanetLoader } from '@/components/three/PlanetLoader';
 import { Button } from '@/components/ui/Button';
+import { ProfileLinks } from '@/components/ui/ProfileLinks';
 import { Sparkle } from '@/components/ui/Sparkle';
 import { Sticker } from '@/components/ui/Sticker';
 import { content } from '@/content/content';
@@ -19,7 +20,7 @@ export function splitHeadline(lines: readonly string[]) {
  * be the LCP element from first paint (never waits for hydration or Motion).
  */
 export function Hero() {
-  const { hero, socials, ui } = content;
+  const { hero, site, socials, ui } = content;
   const { lines, lastLead, lastWord } = splitHeadline(hero.lines);
 
   return (
@@ -36,7 +37,13 @@ export function Hero() {
           </Sticker>
         </div>
 
-        <h2 id="hero-title" className="hero-title">
+        {/* The block-level line spans have no whitespace between them, so screen readers
+            (NVDA) read "AIthat" and "thatships"; an explicit name keeps the words apart. */}
+        <h1
+          id="hero-title"
+          className="hero-title"
+          aria-label={[...lines, lastLead, lastWord].filter(Boolean).join(' ')}
+        >
           {lines.map((line, i) => (
             <span key={i} className="line-clip">
               <span className="reveal-line hero-line" style={{ display: 'block' }}>
@@ -52,7 +59,7 @@ export function Hero() {
               </span>
             </span>
           </span>
-        </h2>
+        </h1>
 
         <p className="hero-pitch">{hero.pitch}</p>
 
@@ -64,6 +71,13 @@ export function Hero() {
             {ui.resume}
           </Button>
         </div>
+
+        <ul className="hero-links contact-links" aria-label="Contact and profiles">
+          <li>
+            <a href={`mailto:${site.email}`}>{site.email}</a>
+          </li>
+          <ProfileLinks />
+        </ul>
       </div>
 
       <div className="hero-planet" aria-hidden="true">

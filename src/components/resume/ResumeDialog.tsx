@@ -70,7 +70,7 @@ export default function ResumeDialog({ request }: Props) {
       }}
     >
       <div className="resume-dialog-inner">
-        <header className="resume-dialog-head">
+        <div className="resume-dialog-head">
           <h2 id="resume-dialog-title" className="sticker sticker-pixel resume-dialog-title">
             {ui.title}
           </h2>
@@ -84,7 +84,7 @@ export default function ResumeDialog({ request }: Props) {
               <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="2.5" fill="none" />
             </svg>
           </button>
-        </header>
+        </div>
 
         <div className="resume-dialog-body" tabIndex={0} role="region" aria-label={ui.bodyLabel}>
           {request && !failed ? (
@@ -105,7 +105,7 @@ export default function ResumeDialog({ request }: Props) {
           ) : null}
         </div>
 
-        <footer className="resume-dialog-foot">
+        <div className="resume-dialog-foot">
           <div className="resume-dialog-actions">
             <a href={href} download={ui.filename} className="btn btn-accent">
               {ui.download}
@@ -115,7 +115,7 @@ export default function ResumeDialog({ request }: Props) {
             </a>
           </div>
           <p className="mono-sm text-muted">{ui.hint}</p>
-        </footer>
+        </div>
       </div>
     </dialog>
   );

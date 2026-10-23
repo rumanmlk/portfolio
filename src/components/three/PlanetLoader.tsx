@@ -19,9 +19,10 @@ import { onIntroDone } from '@/lib/intro-state';
 /** Three.js lives in its own chunk; nothing of it is in the initial bundle. */
 const Planet = dynamic(() => import('@/components/three/Planet'), { ssr: false });
 
-function eligible(): boolean {
+/** The planet column is display:none on phones; no point running WebGL for a box that is not there. */
+function eligible(host: HTMLElement | null): boolean {
   if (!features.planet) return false;
-  if (window.innerWidth < 1024) return false;
+  if (!host || host.clientWidth === 0) return false;
   if (saveDataEnabled()) return false;
   if (isLowEndDevice()) return false;
   if (!hasWebGL()) return false;
@@ -30,7 +31,7 @@ function eligible(): boolean {
 
 /**
  * Mounts the 3D scene only after the intro finished and the browser is idle,
- * and only on capable desktop devices. Everything else keeps the CSS planet.
+ * and only on capable devices where the planet is visible. Everything else keeps the CSS planet.
  */
 export function PlanetLoader() {
   // null until the intro is done and the browser is idle, then whether the 3D scene may run.
@@ -46,7 +47,7 @@ export function PlanetLoader() {
     let cancelIdle: (() => void) | null = null;
     const offIntro = onIntroDone(() => {
       cancelIdle = whenIdle(() => {
-        setOk(eligible());
+        setOk(eligible(host.current));
         setReduced(prefersReducedMotion());
       }, 2000);
     });
@@ -56,7 +57,7 @@ export function PlanetLoader() {
     };
   }, []);
 
-  // Re-evaluate on resize (crossing 1024px) and live reduced-motion changes.
+  // Re-evaluate on resize (the column appears and disappears across breakpoints) and live reduced-motion changes.
   useEffect(() => {
     if (!ready) return;
     let raf = 0;
@@ -64,7 +65,7 @@ export function PlanetLoader() {
       if (raf) return;
       raf = window.requestAnimationFrame(() => {
         raf = 0;
-        setOk(eligible());
+        setOk(eligible(host.current));
       });
     };
     window.addEventListener('resize', onResize, { passive: true });

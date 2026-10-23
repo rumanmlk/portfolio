@@ -2,17 +2,23 @@ import type { CSSProperties } from 'react';
 
 import { RevealLines } from '@/components/ui/Reveal';
 import { Sparkle } from '@/components/ui/Sparkle';
-import { content, type StackItem } from '@/content/content';
-import { stackIcons, type StackIconSlug } from '@/content/stack-icons.generated';
+import { content, type StackIconKey, type StackItem } from '@/content/content';
+import extraStackIcons from '@/content/stack-icons.extra.json';
+import { stackIcons } from '@/content/stack-icons.generated';
+
+type StackIcon = { hex: string; hexOnDark: string; path: string; viewBox?: string };
 
 /**
- * Logos are Simple Icons (https://simpleicons.org).
- * Trademarks belong to their owners. Paths are inlined so hover color works
- * (external <use href="/sprite.svg#…"> often ignores CSS currentColor).
+ * Logos are Simple Icons (https://simpleicons.org) plus hand-supplied marks in
+ * stack-icons.extra.json: official brand-kit files for OpenAI and xAI, and a generic glyph for
+ * FAISS (not a brand mark). One-color marks: ink on light, cream on dark. Trademarks belong to
+ * their owners. Paths are inlined so hover color works (external <use href="/sprite.svg#…">
+ * often ignores CSS currentColor).
  */
+const icons: Record<StackIconKey, StackIcon> = { ...stackIcons, ...extraStackIcons };
+
 function iconFor(item: StackItem) {
-  if (!item.icon || !(item.icon in stackIcons)) return undefined;
-  return stackIcons[item.icon as StackIconSlug];
+  return item.icon ? icons[item.icon] : undefined;
 }
 
 /** One slab of tools. Groups with no items are omitted; an empty slab is not rendered. */
@@ -45,21 +51,18 @@ export function Stack() {
                     {icon ? (
                       <svg
                         className="stack-logo"
-                        viewBox="0 0 24 24"
+                        viewBox={icon.viewBox ?? '0 0 24 24'}
                         aria-hidden="true"
                         focusable="false"
                       >
                         <path fill="currentColor" d={icon.path} />
                       </svg>
-                    ) : (
+                    ) : 'mono' in item ? (
                       <span className="stack-mono" aria-hidden="true">
                         {item.mono}
                       </span>
-                    )}
+                    ) : null}
                     <span className="stack-name">{item.name}</span>
-                    <span className="stack-tip" aria-hidden="true">
-                      {item.name}
-                    </span>
                   </li>
                 );
               })}

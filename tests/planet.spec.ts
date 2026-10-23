@@ -42,13 +42,39 @@ test.describe('halftone planet', () => {
     expect(errors).toEqual([]);
   });
 
-  test('is absent below 1024px and keeps the CSS planet', async ({ page }) => {
+  test('runs on tablet widths and stays CSS-only where the planet column is hidden', async ({
+    page,
+  }) => {
     await capable(page);
     await page.setViewportSize({ width: 800, height: 900 });
     await page.goto('/');
-    await page.waitForTimeout(3500);
+    await expect(page.locator(CANVAS)).toBeAttached({ timeout: 15_000 });
+    await page.setViewportSize({ width: 500, height: 900 });
     await expect(page.locator(CANVAS)).toHaveCount(0);
-    await expect(page.locator('.hero-planet .planet-static')).toHaveCount(1);
+    await page.setViewportSize({ width: 800, height: 900 });
+    await expect(page.locator(CANVAS)).toBeAttached({ timeout: 10_000 });
+  });
+
+  test('comes back and keeps animating after shrinking and growing again', async ({ page }) => {
+    await capable(page);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    await expect(page.locator(CANVAS)).toBeAttached({ timeout: 15_000 });
+
+    await page.setViewportSize({ width: 500, height: 900 });
+    await expect(page.locator(CANVAS)).toHaveCount(0);
+    // r3f force-loses the context a moment after unmount; wait past it.
+    await page.waitForTimeout(1500);
+
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await expect(page.locator(CANVAS)).toBeAttached({ timeout: 10_000 });
+    await expect(page.locator('.hero-planet .planet-static')).toHaveCount(0);
+
+    // The scene must actually be rendering: the planet's pixels change between samples.
+    const hero = page.locator('.hero-planet');
+    const a = await hero.screenshot();
+    await page.waitForTimeout(600);
+    expect((await hero.screenshot()).equals(a)).toBe(false);
   });
 
   test('is absent on low-end devices', async ({ page }) => {

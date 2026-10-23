@@ -15,8 +15,8 @@ test.describe('content without JavaScript', () => {
 
   test('renders every section, light theme, no intro', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('h1:visible').filter({ hasText: content.site.name })).toBeVisible();
-    await expect(page.getByRole('heading', { level: 2, name: /i build ai/i })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: /i build ai/i })).toBeVisible();
+    await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('article.project-card')).toHaveCount(content.projects.length);
     await expect(page.locator('.experience-row')).toHaveCount(content.experience.length);
     await expect(page.locator('#stack')).toBeVisible();
@@ -77,14 +77,19 @@ test.describe('entry sequence', () => {
       await page.waitForTimeout(150);
     }
     await expect(page.locator(INTRO)).toHaveCount(0, { timeout: 10_000 });
-    await expect(page.locator('h1:visible').first()).toBeFocused();
+    await expect(page.locator('h1')).toBeFocused();
   });
 
   test('clicking anywhere advances and the Skip button leaves', async ({ page }) => {
     await page.goto('/');
     await waitForScene(page);
     await page.mouse.click(200, 200);
-    await page.getByRole('button', { name: content.ui.intro.skip }).click();
+    // The click can already finish the intro, so Skip may be gone by the time it is actionable
+    // (WebKit's stability check is slower than the exit). Either way the intro must end.
+    await page
+      .getByRole('button', { name: content.ui.intro.skip })
+      .click({ timeout: 3000 })
+      .catch(() => undefined);
     await expect(page.locator(INTRO)).toHaveCount(0, { timeout: 10_000 });
     await expect(page.locator('.avatar-landing svg:visible').first()).toBeVisible();
   });
@@ -197,7 +202,9 @@ test.describe('theme', () => {
 });
 
 test.describe('stack', () => {
-  test('lists all tools under five group labels in order', async ({ page }) => {
+  test('lists all tools under six group labels in order, names always visible', async ({
+    page,
+  }) => {
     await skipIntro(page);
     await page.goto('/');
     const section = page.locator('#stack');
@@ -206,10 +213,8 @@ test.describe('stack', () => {
       section.getByRole('heading', { level: 2, name: content.ui.sections.stack }),
     ).toBeVisible();
     const labels = content.stack.map((g) => g.group);
-    expect(labels).toHaveLength(5);
     await expect(section.locator('.stack-label')).toHaveText(labels);
     const names = content.stack.flatMap((g) => g.items.map((i) => i.name));
-    expect(names).toHaveLength(22);
     await expect(section.locator('.stack-name')).toHaveText(names);
     await expect(page.getByText('NOW BUILDING', { exact: true })).toHaveCount(0);
     await expect(page.getByText('USE DAILY', { exact: true })).toHaveCount(0);
@@ -217,15 +222,13 @@ test.describe('stack', () => {
     await expect(page.getByText('LEARNING', { exact: true })).toHaveCount(0);
   });
 
-  test('desktop hover shows the FastAPI tooltip and keycap lift', async ({ page, isMobile }) => {
+  test('desktop hover lifts the FastAPI keycap', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'hover tooltips are desktop-only');
     await skipIntro(page);
     await page.goto('/');
     const cell = page.locator('#stack .stack-tool').filter({ hasText: 'FastAPI' });
     await cell.scrollIntoViewIfNeeded();
     await cell.hover();
-    await expect(cell.locator('.stack-tip')).toBeVisible();
-    await expect(cell.locator('.stack-tip')).toHaveText('FastAPI');
     await expect
       .poll(async () => {
         await cell.hover();
@@ -241,7 +244,7 @@ test.describe('stack', () => {
       .toBeCloseTo(-4, 0);
   });
 
-  test('touch tap toggles is-active and the tooltip', async ({ browser }) => {
+  test('touch tap toggles is-active', async ({ browser }) => {
     const context = await browser.newContext({
       ...devices['Pixel 7'],
       hasTouch: true,
@@ -250,11 +253,12 @@ test.describe('stack', () => {
     await skipIntro(page);
     await page.goto('/');
     await page.evaluate(() => document.getElementById('stack')?.scrollIntoView());
-    await page.waitForTimeout(3500);
     const cell = page.locator('#stack .stack-tool').filter({ hasText: 'Python' });
-    await cell.tap();
-    await expect(cell).toHaveClass(/is-active/);
-    await expect(cell.locator('.stack-tip')).toBeVisible();
+    // StackTips is a lazy chunk mounted after idle; retry the tap until its handler is attached.
+    await expect(async () => {
+      await cell.tap();
+      await expect(cell).toHaveClass(/is-active/, { timeout: 1000 });
+    }).toPass({ timeout: 20_000 });
     await page.locator('#stack-title').tap();
     await expect(cell).not.toHaveClass(/is-active/);
     await context.close();
@@ -297,12 +301,21 @@ test.describe('navigation', () => {
     await link.click();
     await expect(page).toHaveURL(/#experience$/);
     await expect(page.locator('#experience-title')).toBeFocused();
-    await page.waitForTimeout(1600);
-    const top = await page.evaluate(
-      () => document.getElementById('experience')!.getBoundingClientRect().top,
-    );
-    expect(top).toBeGreaterThanOrEqual(-2);
-    expect(top).toBeLessThanOrEqual(160);
+    // Lenis may re-aim once after content-visibility sections resolve their real height.
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => document.getElementById('experience')!.getBoundingClientRect().top),
+        { timeout: 8000 },
+      )
+      .toBeGreaterThanOrEqual(-2);
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() => document.getElementById('experience')!.getBoundingClientRect().top),
+        { timeout: 8000 },
+      )
+      .toBeLessThanOrEqual(160);
   });
 
   test('skip link is the first focusable element', async ({ page, isMobile }, testInfo) => {
@@ -344,13 +357,44 @@ test.describe('work', () => {
     await expect(page.getByRole('group', { name: 'Filter projects' })).toHaveCount(0);
     const cards = page.locator('article.project-card');
     await expect(cards).toHaveCount(content.projects.length);
+    const featuredCount = content.projects.filter((p) => p.featured).length;
+    expect(content.projects.slice(0, featuredCount).every((p) => p.featured)).toBe(true);
+    await page.locator('.work-more-summary').click();
     for (let i = 0; i < content.projects.length; i += 1) {
       const project = content.projects[i]!;
       const card = cards.nth(i);
       await expect(card.getByRole('heading', { level: 3 })).toContainText(project.title);
       await expect(card.locator('.project-number')).toHaveText(String(i + 1).padStart(2, '0'));
       await expect(card.getByText(content.ui.kinds[project.kind], { exact: true })).toBeVisible();
+      await expect(card.locator('.project-headline')).toHaveText(project.headline);
     }
+  });
+
+  test('every role project resolves to a Work project title', () => {
+    const titles = new Set(content.projects.map((p) => p.title));
+    for (const role of content.experience) {
+      for (const name of role.projects ?? []) expect(titles.has(name), name).toBe(true);
+    }
+  });
+
+  test('extra projects are collapsed until opened and EP. wording is gone', async ({ page }) => {
+    await skipIntro(page);
+    await page.goto('/');
+    const more = page.locator('details.work-more');
+    await expect(more).not.toHaveAttribute('open', '');
+    const featuredCount = content.projects.filter((p) => p.featured).length;
+    await expect(page.locator('article.project-card:visible')).toHaveCount(featuredCount);
+    await page.locator('.work-more-summary').click();
+    await expect(page.locator('article.project-card:visible')).toHaveCount(content.projects.length);
+    await expect(page.getByText('EP.', { exact: true })).toHaveCount(0);
+  });
+
+  test('print shows every project even while the extras are collapsed', async ({ page }) => {
+    await skipIntro(page);
+    await page.goto('/');
+    await expect(page.locator('details.work-more')).not.toHaveAttribute('open', '');
+    await page.emulateMedia({ media: 'print' });
+    await expect(page.locator('article.project-card:visible')).toHaveCount(content.projects.length);
   });
 });
 

@@ -2,6 +2,7 @@ import { Avatar } from '@/components/avatar/Avatar';
 import { Nav } from '@/components/shell/Nav';
 import { ThemeToggle } from '@/components/shell/ThemeToggle';
 import { Reveal, RevealPop } from '@/components/ui/Reveal';
+import { ProfileLinks } from '@/components/ui/ProfileLinks';
 import { Sticker } from '@/components/ui/Sticker';
 import { content, getSections } from '@/content/content';
 
@@ -23,7 +24,7 @@ export function Sidebar() {
           </RevealPop>
 
           <Reveal delay={0.1}>
-            <h1 className="sidebar-name">{site.name}</h1>
+            <p className="sidebar-name">{site.name}</p>
             <p className="mono mt-3 text-[13px] font-medium">{ui.classLabel}</p>
           </Reveal>
         </div>
@@ -35,16 +36,7 @@ export function Sidebar() {
 
           <Reveal className="sidebar-bottom" delay={0.25}>
             <ul className="sidebar-links" aria-label="Profiles and resume">
-              <li>
-                <a href={socials.github} target="_blank" rel="noopener noreferrer">
-                  {ui.github}
-                </a>
-              </li>
-              <li>
-                <a href={socials.linkedin} target="_blank" rel="noopener noreferrer">
-                  {ui.linkedin}
-                </a>
-              </li>
+              <ProfileLinks />
               <li>
                 <a
                   href={socials.resume}

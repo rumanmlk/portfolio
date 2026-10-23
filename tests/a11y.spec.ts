@@ -30,7 +30,6 @@ test.describe('accessibility (axe-core)', () => {
     await expect(page.locator('#stack .stack-slab')).toBeVisible();
     const cell = page.locator('#stack .stack-tool').first();
     await cell.hover();
-    await expect(cell.locator('.stack-tip')).toBeVisible();
     await page.waitForTimeout(400);
     await audit(page);
   });
@@ -49,7 +48,6 @@ test.describe('accessibility (axe-core)', () => {
     await expect(page.locator('#stack .stack-slab')).toBeVisible();
     const cell = page.locator('#stack .stack-tool').first();
     await cell.hover();
-    await expect(cell.locator('.stack-tip')).toBeVisible();
     await page.waitForTimeout(400);
     await audit(page);
   });
@@ -69,7 +67,6 @@ test.describe('accessibility (axe-core)', () => {
     const cell = page.locator('#stack .stack-tool').filter({ hasText: 'Python' });
     await cell.tap();
     await expect(cell).toHaveClass(/is-active/);
-    await expect(cell.locator('.stack-tip')).toBeVisible();
     await audit(page);
     await context.close();
   });

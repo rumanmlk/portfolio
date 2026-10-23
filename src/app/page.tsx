@@ -9,9 +9,6 @@ import { Footer } from '@/components/shell/Footer';
 import { MobileHeader } from '@/components/shell/MobileHeader';
 import { Sidebar } from '@/components/shell/Sidebar';
 
-/** The whole route is static; nothing here depends on the request (B14). */
-export const ensureStatic = 'navigation';
-
 export default function Page() {
   return (
     <>

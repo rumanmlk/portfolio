@@ -14,8 +14,7 @@ export function MobileHeader() {
     <header className="mobile-header-wrap" data-shell="mobile">
       <div className="mobile-header halftone-side themed">
         <Avatar placement="mobile" />
-        {/* The sidebar h1 is display:none below 1024px, so this is the page h1 on mobile. */}
-        <h1 className="mobile-name">{content.site.name}</h1>
+        <p className="mobile-name">{content.site.name}</p>
         <ThemeToggle size="small" />
       </div>
       <Nav items={sections} variant="strip" />
