@@ -166,22 +166,6 @@ export const content = {
       confidential: true,
     },
     {
-      id: 'dga-detection',
-      title: 'DGA Domain Detection',
-      kind: 'company',
-      ownership: 'Built during the Ebryx ML internship',
-      problem:
-        'Malware uses domain generation algorithms to churn out command-and-control domains faster than blocklists can keep up.',
-      result:
-        'DeepD2V (Word2Vec + 1D CNN) reached 0.94 holdout accuracy on 200k domains, beating n-gram and reputation baselines; shipped with a Flask API and React UI.',
-      stack: ['Python', 'Word2Vec', 'Keras', 'Flask', 'React'],
-      headline: '0.94 holdout accuracy on 200k domains',
-      featured: true,
-      flow: ['Domain name', 'Word2Vec embedding', '1D CNN classifier', 'Flask API and React UI'],
-      validation: 'Held-out 200k-domain set, compared against n-gram and reputation baselines.',
-      links: { code: 'https://github.com/rumanmlk/DGA-Detection' },
-    },
-    {
       id: 'lexio',
       title: 'Lexio AI Legal Counsel',
       kind: 'personal',
@@ -203,16 +187,33 @@ export const content = {
       links: { code: 'https://github.com/rumanmlk/Lexio' },
     },
     {
-      id: 'rice-quality-check',
-      title: 'Rice Quality Check',
-      kind: 'university',
-      ownership: 'Final year project, team of 3',
+      id: 'dga-detection',
+      title: 'DGA Domain Detection',
+      kind: 'company',
+      ownership: 'Built during the Ebryx ML internship',
       problem:
-        'Classify 8 Pakistani rice varieties and detect adulteration from grain images, a check that mills and buyers still do by eye.',
+        'Malware uses domain generation algorithms to churn out command-and-control domains faster than blocklists can keep up.',
       result:
-        '92% average accuracy across 6 fine-tuned vision models on 10,000+ captured grain images, served through a FastAPI backend and a React UI.',
-      stack: ['Computer Vision', 'FastAPI', 'React', 'MongoDB'],
-      headline: '92% average accuracy, 8 rice varieties',
+        'DeepD2V (Word2Vec + 1D CNN) reached 0.94 holdout accuracy on 200k domains, beating n-gram and reputation baselines; shipped with a Flask API and React UI.',
+      stack: ['Python', 'Word2Vec', 'Keras', 'Flask', 'React'],
+      headline: '0.94 holdout accuracy on 200k domains',
+      featured: true,
+      flow: ['Domain name', 'Word2Vec embedding', '1D CNN classifier', 'Flask API and React UI'],
+      validation: 'Held-out 200k-domain set, compared against n-gram and reputation baselines.',
+      links: { code: 'https://github.com/rumanmlk/DGA-Detection' },
+    },
+    {
+      id: 'exd-odoo',
+      title: 'ExD Odoo operations platform',
+      kind: 'company',
+      ownership: 'Mentored the intern cohort and ran deployment',
+      problem:
+        'ExD replaced ad-hoc time tracking with a custom Odoo 19 platform of 20+ addons that had to go live company-wide, built largely by an intern cohort.',
+      result:
+        'Stood up the deployment stack, coached the interns through merge-ready fixes and onboarded their replacement; the platform is now used daily across the company.',
+      stack: ['Odoo 19', 'Python', 'PostgreSQL'],
+      headline: '20+ addons live company-wide',
+      confidential: true,
     },
     {
       id: 'multi-tenant-ecommerce',
@@ -228,17 +229,16 @@ export const content = {
       confidential: true,
     },
     {
-      id: 'exd-odoo',
-      title: 'ExD Odoo operations platform',
-      kind: 'company',
-      ownership: 'Mentored the intern cohort and ran deployment',
+      id: 'rice-quality-check',
+      title: 'Rice Quality Check',
+      kind: 'university',
+      ownership: 'Final year project, team of 3',
       problem:
-        'ExD replaced ad-hoc time tracking with a custom Odoo 19 platform of 20+ addons that had to go live company-wide, built largely by an intern cohort.',
+        'Classify 8 Pakistani rice varieties and detect adulteration from grain images, a check that mills and buyers still do by eye.',
       result:
-        'Stood up the deployment stack, coached the interns through merge-ready fixes and onboarded their replacement; the platform is now used daily across the company.',
-      stack: ['Odoo 19', 'Python', 'PostgreSQL'],
-      headline: '20+ addons live company-wide',
-      confidential: true,
+        '92% average accuracy across 6 fine-tuned vision models on 10,000+ captured grain images, served through a FastAPI backend and a React UI.',
+      stack: ['Computer Vision', 'FastAPI', 'React', 'MongoDB'],
+      headline: '92% average accuracy, 8 rice varieties',
     },
   ] satisfies Project[] as Project[],
 
