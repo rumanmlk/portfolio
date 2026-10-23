@@ -6,31 +6,28 @@ type Props = { project: Project; index: number };
 
 const linkOrder = ['live', 'code', 'paper'] as const;
 
-/** A work card: always straight, always the same red shadow (B7). */
+/** A work card: always straight, always the same red shadow (B7). `index` only sets the number. */
 export function ProjectCard({ project, index }: Props) {
   const { ui } = content;
   const number = String(index + 1).padStart(2, '0');
   const titleId = `project-${project.id}-title`;
-  const links = project.confidential
-    ? []
-    : linkOrder
-        .map((key) => ({ key, href: project.links?.[key] }))
-        .filter((l): l is { key: (typeof linkOrder)[number]; href: string } => Boolean(l.href));
+  const links = linkOrder.flatMap((key) => {
+    const href = project.links?.[key];
+    return href ? [{ key, href }] : [];
+  });
 
   return (
     <article className="card project-card themed" aria-labelledby={titleId}>
       <div className="project-num" aria-hidden="true">
-        <span className="sticker sticker-pixel project-ep">{ui.episode}</span>
         <span className="display project-number">{number}</span>
       </div>
 
       <div className="project-body">
         <h3 id={titleId} className="project-title">
-          <span className="sr-only">
-            {ui.episode} {number}:{' '}
-          </span>
           {project.title}
         </h3>
+
+        <p className="project-headline">{project.headline}</p>
 
         <div className="project-meta">
           <Chip>{ui.kinds[project.kind]}</Chip>
@@ -53,7 +50,25 @@ export function ProjectCard({ project, index }: Props) {
               <dd>{project.result}</dd>
             </div>
           ) : null}
+          {project.validation ? (
+            <div className="project-row">
+              <dt>
+                <Sticker fill="yellow">{ui.validation}</Sticker>
+              </dt>
+              <dd>{project.validation}</dd>
+            </div>
+          ) : null}
         </dl>
+
+        {project.flow && project.flow.length > 0 ? (
+          <ol className="project-flow" role="list" aria-label={`${ui.flow}: ${project.title}`}>
+            {project.flow.map((step, i) => (
+              <li key={`${step}-${i}`} className="chip">
+                {step}
+              </li>
+            ))}
+          </ol>
+        ) : null}
 
         <TagList items={project.stack} label={`Stack for ${project.title}`} />
 

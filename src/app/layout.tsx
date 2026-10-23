@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { Anton, IBM_Plex_Sans, JetBrains_Mono } from 'next/font/google';
 import localFont from 'next/font/local';
 import type { ReactNode } from 'react';
 import { Analytics } from '@vercel/analytics/next';
@@ -14,28 +13,34 @@ import { THEME_COLORS } from '@/lib/theme';
 
 import './globals.css';
 
-const anton = Anton({
+/** Self-hosted latin slices (no build- or dev-time font download). */
+const anton = localFont({
+  src: '../assets/fonts/Anton-latin.woff2',
   weight: '400',
-  subsets: ['latin'],
+  style: 'normal',
   display: 'swap',
   variable: '--font-anton',
-  adjustFontFallback: true,
+  adjustFontFallback: 'Arial',
 });
 
-const plex = IBM_Plex_Sans({
-  weight: ['400', '500'],
-  subsets: ['latin'],
+/** Variable font: one file covers 400 and 500. */
+const plex = localFont({
+  src: '../assets/fonts/IBMPlexSans-latin.woff2',
+  weight: '400 500',
+  style: 'normal',
   display: 'swap',
   variable: '--font-plex',
-  adjustFontFallback: true,
+  adjustFontFallback: 'Arial',
 });
 
-const jetbrains = JetBrains_Mono({
-  weight: ['400', '500'],
-  subsets: ['latin'],
+/** Variable font: one file covers 400 and 500. */
+const jetbrains = localFont({
+  src: '../assets/fonts/JetBrainsMono-latin.woff2',
+  weight: '400 500',
+  style: 'normal',
   display: 'swap',
   variable: '--font-jetbrains',
-  adjustFontFallback: true,
+  adjustFontFallback: false,
 });
 
 /**

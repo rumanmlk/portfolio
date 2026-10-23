@@ -38,6 +38,9 @@ test.describe('resume dialog', () => {
     await expect(dialog.getByRole('img', { name: /preview of ruman malik/i })).toBeVisible();
     const inside = await page.evaluate(() => document.activeElement?.closest('dialog') !== null);
     expect(inside).toBe(true);
+    // header/footer inside a dialog would be read as extra banner/contentinfo landmarks.
+    await expect(dialog.getByRole('banner')).toHaveCount(0);
+    await expect(dialog.getByRole('contentinfo')).toHaveCount(0);
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
     await expect(trigger).toBeFocused();
@@ -117,7 +120,7 @@ test.describe('resume dialog', () => {
       .locator('a[data-resume-trigger]')
       .evaluateAll((els) => els.map((el) => el.getAttribute('href')));
     expect(hrefs.length).toBeGreaterThanOrEqual(3);
-    for (const href of hrefs) expect(href).toBe('/resume.pdf?v=4');
+    for (const href of hrefs) expect(href).toBe('/resume.pdf?v=5');
   });
 });
 

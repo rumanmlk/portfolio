@@ -1,6 +1,7 @@
 import { ResumeFolder } from '@/components/resume/ResumeFolder';
 import { CopyEmail } from '@/components/sections/CopyEmail';
 import { Reveal, RevealPop } from '@/components/ui/Reveal';
+import { ProfileLinks } from '@/components/ui/ProfileLinks';
 import { Sticker } from '@/components/ui/Sticker';
 import { content } from '@/content/content';
 
@@ -27,19 +28,14 @@ export function Contact() {
             </a>
           </Reveal>
 
+          <Reveal delay={0.08}>
+            <p className="contact-location mono">{site.locationNote}</p>
+          </Reveal>
+
           <Reveal className="contact-row" delay={0.1}>
             <CopyEmail email={site.email} />
             <ul className="contact-links" aria-label="Profiles">
-              <li>
-                <a href={socials.github} target="_blank" rel="noopener noreferrer">
-                  {ui.github}
-                </a>
-              </li>
-              <li>
-                <a href={socials.linkedin} target="_blank" rel="noopener noreferrer">
-                  {ui.linkedin}
-                </a>
-              </li>
+              <ProfileLinks />
             </ul>
           </Reveal>
         </div>

@@ -23,18 +23,29 @@ export type Project = {
   result?: string;
   stack: string[];
   links?: { live?: string; code?: string; paper?: string };
-  /** NDA work: shows a PRIVATE chip and hides links. */
+  /** NDA work: shows a PRIVATE chip. Add `links` only with written approval from the owner. */
   confidential?: boolean;
+  /** Shown in the first, always-visible group of Work. The rest sit behind "More projects". */
+  featured?: boolean;
+  /** One scannable line shown above the card body, e.g. '0.94 holdout accuracy'. */
+  headline: string;
+  /** 3 to 5 plain steps drawn as a flow diagram. Built from facts already in `result`. */
+  flow?: string[];
+  /** How the result was checked. Only state what is true and already public. */
+  validation?: string;
 };
 
 export type Role = {
   company: string;
   role: string;
+  /** 'YYYY-MM', matches the resume. */
   start: string;
+  /** 'YYYY-MM' or 'Present'. */
   end: string | 'Present';
-  /** Up to 3 bullets are rendered. */
-  bullets: string[];
-  stack: string[];
+  /** One or two plain sentences. Details live in the project cards. */
+  summary: string;
+  /** Titles of Work projects built in this role (display only). */
+  projects?: string[];
 };
 
 export type Post = { title: string; date: string; url: string };
@@ -43,13 +54,15 @@ export type NavItem = { id: SectionId; label: string };
 
 export type SectionId = 'work' | 'experience' | 'stack' | 'writing' | 'contact';
 
-export type StackItem = {
-  name: string;
-  /** simple-icons slug. Omitted when the tool has no official logo. */
-  icon?: string;
-  /** Short text shown in the cell when there is no logo. */
-  mono?: string;
-};
+/** Slugs from Simple Icons (generated) plus the hand-supplied marks in stack-icons.extra.json. */
+export type StackIconKey =
+  | import('@/content/stack-icons.generated').StackIconSlug
+  | keyof typeof import('@/content/stack-icons.extra.json');
+
+/** Every tool shows either a logo or a short mono label, never neither. */
+export type StackItem = { name: string } & (
+  { icon: StackIconKey; mono?: never } | { mono: string; icon?: never }
+);
 
 export type StackGroup = { group: string; items: StackItem[] };
 
@@ -57,12 +70,14 @@ export const content = {
   site: {
     name: chrome.siteName,
     shortName: chrome.shortName,
-    title: 'AI Engineer',
+    title: 'Software Engineer',
     description:
-      'Software engineer in Lahore shipping production demand forecasting and multi-provider LLM systems with FastAPI, React, LightGBM and PostgreSQL.',
+      'Software engineer in Lahore building production ML and LLM systems: demand forecasting and multi-provider LLM routing with FastAPI, React, LightGBM and PostgreSQL.',
     email: 'rumanmlk123@gmail.com',
     url: SITE_URL,
     location: 'Lahore, Pakistan',
+    /** Shown in Contact. Add remote or relocation wording here only when it is true. */
+    locationNote: 'Based in Lahore, Pakistan',
     /** Used in JSON-LD and the OG image. */
     employer: {
       name: 'Excellence Delivered (ExD)',
@@ -91,13 +106,13 @@ export const content = {
   socials: {
     github: 'https://github.com/rumanmlk',
     linkedin: 'https://www.linkedin.com/in/ruman-malik',
-    resume: '/resume.pdf?v=4',
+    resume: '/resume.pdf?v=5',
   },
 
   hero: {
     lines: ['I build AI', 'that ships.'],
     pitch:
-      'Full-stack engineer at ExD. I build the parts that keep ML and LLM products alive in production: model routing, provider failover, async workers and CI that catches drift before users do.',
+      'Software engineer at ExD. I build the parts that keep ML and LLM products alive in production: model routing, provider failover, async workers and CI that catches drift before users do.',
   },
 
   intro: {
@@ -115,6 +130,17 @@ export const content = {
       result:
         'Routes each series to the right LightGBM model (Huber, quantile, two-stage occurrence/magnitude), tuned with Optuna and 7-fold walk-forward validation; planners upload, train, forecast and review a full-year holdout in one UI.',
       stack: ['FastAPI', 'React', 'TypeScript', 'PostgreSQL', 'LightGBM', 'Optuna', 'Docker'],
+      headline: '5M sales rows, 4 forecast grains, 10,000+ series',
+      featured: true,
+      flow: [
+        'Upload sales data',
+        'Route each series by demand shape',
+        'Train LightGBM (Huber, quantile, two-stage)',
+        'Walk-forward tuning with Optuna',
+        'Review a full-year holdout',
+      ],
+      validation:
+        '7-fold walk-forward validation, then a full-year holdout that planners review in the UI.',
       confidential: true,
     },
     {
@@ -127,18 +153,17 @@ export const content = {
       result:
         'One routing layer across OpenAI, Anthropic, Gemini and xAI with primary/fallback pairs and retries, async jobs with per-user locks, and a Django test suite covering roster rules, fallback logic and cost accounting.',
       stack: ['Django', 'PostgreSQL', 'OpenAI', 'Anthropic', 'Gemini', 'xAI'],
+      headline: '4 LLM providers, automatic failover',
+      featured: true,
+      flow: [
+        'Policy question',
+        'Routing layer: primary and fallback',
+        'OpenAI, Anthropic, Gemini, xAI',
+        'Async worker with per-user locks',
+        'Three-round debate',
+      ],
+      validation: 'Django test suite covering roster rules, fallback logic and cost accounting.',
       confidential: true,
-    },
-    {
-      id: 'rice-quality-check',
-      title: 'Rice Quality Check',
-      kind: 'university',
-      ownership: 'Final year project, team of 3',
-      problem:
-        'Classify 8 Pakistani rice varieties and detect adulteration from grain images, a check that mills and buyers still do by eye.',
-      result:
-        '92% average accuracy across 6 fine-tuned vision models on 10,000+ captured grain images, served through a FastAPI backend and a React UI.',
-      stack: ['Computer Vision', 'FastAPI', 'React', 'MongoDB'],
     },
     {
       id: 'dga-detection',
@@ -150,6 +175,10 @@ export const content = {
       result:
         'DeepD2V (Word2Vec + 1D CNN) reached 0.94 holdout accuracy on 200k domains, beating n-gram and reputation baselines; shipped with a Flask API and React UI.',
       stack: ['Python', 'Word2Vec', 'Keras', 'Flask', 'React'],
+      headline: '0.94 holdout accuracy on 200k domains',
+      featured: true,
+      flow: ['Domain name', 'Word2Vec embedding', '1D CNN classifier', 'Flask API and React UI'],
+      validation: 'Held-out 200k-domain set, compared against n-gram and reputation baselines.',
       links: { code: 'https://github.com/rumanmlk/DGA-Detection' },
     },
     {
@@ -162,7 +191,28 @@ export const content = {
       result:
         'FAISS retrieval with MMR over PDF chunks feeds a prompt that answers only from context and declines when the answer is not present.',
       stack: ['LangChain', 'FAISS', 'Ollama', 'Groq', 'Streamlit'],
+      headline: 'Answers only from your document, or declines',
+      featured: true,
+      flow: [
+        'Upload PDF',
+        'Chunk and embed',
+        'FAISS retrieval with MMR',
+        'Answer only from context',
+        'Decline when absent',
+      ],
       links: { code: 'https://github.com/rumanmlk/Lexio' },
+    },
+    {
+      id: 'rice-quality-check',
+      title: 'Rice Quality Check',
+      kind: 'university',
+      ownership: 'Final year project, team of 3',
+      problem:
+        'Classify 8 Pakistani rice varieties and detect adulteration from grain images, a check that mills and buyers still do by eye.',
+      result:
+        '92% average accuracy across 6 fine-tuned vision models on 10,000+ captured grain images, served through a FastAPI backend and a React UI.',
+      stack: ['Computer Vision', 'FastAPI', 'React', 'MongoDB'],
+      headline: '92% average accuracy, 8 rice varieties',
     },
     {
       id: 'multi-tenant-ecommerce',
@@ -174,6 +224,7 @@ export const content = {
       result:
         'Isolated per-tenant storefronts and admin on PostgreSQL, a pluggable upload layer (local filesystem or MinIO), and GitHub Actions that build, test and deploy on every push.',
       stack: ['Next.js', 'PostgreSQL', 'MinIO', 'GitHub Actions'],
+      headline: 'One codebase, many tenants',
       confidential: true,
     },
     {
@@ -186,6 +237,7 @@ export const content = {
       result:
         'Stood up the deployment stack, coached the interns through merge-ready fixes and onboarded their replacement; the platform is now used daily across the company.',
       stack: ['Odoo 19', 'Python', 'PostgreSQL'],
+      headline: '20+ addons live company-wide',
       confidential: true,
     },
   ] satisfies Project[] as Project[],
@@ -194,47 +246,37 @@ export const content = {
     {
       company: 'Excellence Delivered (ExD)',
       role: 'Associate Software Engineer',
-      start: '2026',
+      start: '2026-03',
       end: 'Present',
-      bullets: [
-        'Shipped PythinQ, a 4-grain demand-forecasting product on about 5M sales rows, with model routing by demand shape and 7-fold walk-forward tuning.',
-        'Built the LLM routing layer for Omnix AI across 4 providers with fallback and retries, and moved multi-minute debate runs onto an async worker.',
-        "Mentored the intern cohort that built ExD's Odoo platform and stood up its deployment stack through company-wide rollout.",
-      ],
-      stack: ['FastAPI', 'Django', 'React', 'PostgreSQL', 'LightGBM', 'Docker'],
+      summary:
+        'Ships ML and LLM products end to end, and mentored the intern cohort behind the internal Odoo platform.',
+      projects: ['PythinQ demand forecasting', 'Omnix AI', 'ExD Odoo operations platform'],
     },
     {
       company: 'Core Edge Solutions',
       role: 'Full Stack Developer (Next.js)',
-      start: '2025',
-      end: '2026',
-      bullets: [
-        'Built a multi-tenant eCommerce platform with Next.js and PostgreSQL: isolated storefronts and admin on shared infrastructure, plus a single-tenant mode.',
-        'Added a pluggable upload layer (local filesystem and MinIO) and GitHub Actions that build, test and deploy to dev on every push, with manual promotion to staging and main.',
-      ],
-      stack: ['Next.js', 'TypeScript', 'PostgreSQL', 'MinIO', 'GitHub Actions'],
+      start: '2025-12',
+      end: '2026-02',
+      summary:
+        'Built a multi-tenant eCommerce platform with a pluggable upload layer and GitHub Actions deploys.',
+      projects: ['Multi-tenant eCommerce platform'],
     },
     {
       company: 'TAG Solutions (TAGS)',
       role: 'Python Intern',
-      start: '2025',
-      end: '2025',
-      bullets: [
-        'Built and deployed a full-stack app (React, Node.js, MongoDB Atlas) with Docker and GitHub Actions to Docker Hub and Render.',
-        'Converted Django advertisement-marketplace pages to a Django + React (Vite) hybrid.',
-        'Tracked performance and reliability with Loki, Prometheus and Grafana.',
-      ],
-      stack: ['React', 'Node.js', 'MongoDB', 'Django', 'Docker'],
+      start: '2025-09',
+      end: '2025-10',
+      summary:
+        'Shipped a React, Node.js and MongoDB app with Docker and GitHub Actions, converted Django marketplace pages to a Django + React hybrid, and tracked reliability with Loki, Prometheus and Grafana.',
     },
     {
       company: 'Ebryx',
       role: 'Machine Learning Intern',
-      start: '2024',
-      end: '2024',
-      bullets: [
-        'Built a DGA detection system using DeepD2V embeddings on 200k domain records, outperforming n-gram and reputation baselines with 0.94 holdout accuracy.',
-      ],
-      stack: ['Python', 'Keras', 'Word2Vec', 'Flask'],
+      start: '2024-06',
+      end: '2024-09',
+      summary:
+        'Built a DGA detection system on 200k domain records that beat n-gram and reputation baselines.',
+      projects: ['DGA Domain Detection'],
     },
   ] satisfies Role[] as Role[],
 
@@ -256,7 +298,7 @@ export const content = {
         { name: 'LightGBM', mono: 'LGBM' },
         { name: 'Optuna', icon: 'optuna' },
         { name: 'LangChain', icon: 'langchain' },
-        { name: 'FAISS', mono: 'FAISS' },
+        { name: 'FAISS', icon: 'faiss' },
       ],
     },
     {
@@ -268,6 +310,15 @@ export const content = {
         { name: 'PostgreSQL', icon: 'postgresql' },
         { name: 'MongoDB', icon: 'mongodb' },
         { name: 'MinIO', icon: 'minio' },
+      ],
+    },
+    {
+      group: 'LLM APIS',
+      items: [
+        { name: 'OpenAI', icon: 'openai' },
+        { name: 'Anthropic', icon: 'anthropic' },
+        { name: 'Gemini', icon: 'googlegemini' },
+        { name: 'xAI', icon: 'xai' },
       ],
     },
     {
@@ -307,6 +358,7 @@ type ContentShape = {
     email: string;
     url: string;
     location: string;
+    locationNote: string;
     employer: { name: string; url: string };
     keywords: readonly string[];
   };

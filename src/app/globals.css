@@ -601,6 +601,8 @@
   }
 
   .sidebar-name {
+    font-family: var(--font-display);
+    text-transform: uppercase;
     font-size: 3.25rem;
     line-height: 0.95;
   }
@@ -659,6 +661,8 @@
   }
 
   .mobile-name {
+    font-family: var(--font-display);
+    text-transform: uppercase;
     font-size: 1.5rem;
     line-height: 1;
     flex: 1 1 auto;
@@ -1040,6 +1044,17 @@
     gap: 20px 18px;
   }
 
+  /* Extends .contact-links. The desktop sidebar already carries these links, so show them only without it. */
+  .hero-links.contact-links {
+    margin-top: 20px;
+  }
+
+  @media (min-width: 1024px) {
+    .hero-links.contact-links {
+      display: none;
+    }
+  }
+
   /* ---------------- Work (B7) ---------------- */
 
   .work-list {
@@ -1071,11 +1086,6 @@
     gap: 10px;
   }
 
-  .project-ep {
-    font-size: 12px;
-    padding: 1px 7px;
-  }
-
   .project-number {
     font-size: 3.75rem;
     line-height: 0.9;
@@ -1089,6 +1099,17 @@
   .project-title {
     font-size: clamp(1.5rem, 3vw, 1.9rem);
     margin-bottom: 12px;
+  }
+
+  .project-headline {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    margin: -2px 0 14px;
+    padding-left: 12px;
+    border-left: 6px solid var(--accent);
+    color: var(--text);
   }
 
   .project-meta {
@@ -1129,6 +1150,66 @@
     max-width: 70ch;
   }
 
+  .project-flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 0;
+    margin: 0 0 22px;
+    padding: 0;
+    list-style: none;
+    counter-reset: flow;
+  }
+
+  .project-flow li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 40px;
+    margin-right: 12px;
+    padding: 6px 12px 6px 6px;
+    font-size: 12.5px;
+    line-height: 1.3;
+  }
+
+  .project-flow li::before {
+    counter-increment: flow;
+    content: counter(flow);
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    background: var(--pixel-bg);
+    color: var(--pixel-text);
+    font-size: 12px;
+  }
+
+  .work-more {
+    margin-top: 36px;
+  }
+
+  .work-more-summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .work-more-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .work-more-close,
+  .work-more[open] .work-more-open {
+    display: none;
+  }
+
+  .work-more[open] .work-more-close {
+    display: inline;
+  }
+
+  .work-more[open] .work-list {
+    margin-top: 36px;
+  }
+
   .project-links {
     display: flex;
     flex-wrap: wrap;
@@ -1144,7 +1225,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    min-height: 32px;
+    min-height: 44px;
     text-decoration: none;
     border-bottom: 2px solid var(--line);
   }
@@ -1193,7 +1274,7 @@
 
   .experience-row {
     display: grid;
-    grid-template-columns: 150px 1fr;
+    grid-template-columns: 200px 1fr;
     gap: 16px 24px;
     padding: 28px 0;
     border-top: 2px solid var(--line);
@@ -1219,19 +1300,16 @@
     margin-top: 6px;
   }
 
-  .experience-bullets {
+  .experience-summary {
     margin-top: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding-left: 1.2em;
-    list-style: square;
     color: var(--body);
+    line-height: 1.6;
     max-width: 70ch;
   }
 
-  .experience-bullets li::marker {
-    color: var(--line);
+  .experience-projects {
+    margin-top: 12px;
+    color: var(--body);
   }
 
   @media (max-width: 1023px) {
@@ -1314,9 +1392,9 @@
   }
 
   .stack-tools {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 72px);
-    grid-auto-rows: 64px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -1330,8 +1408,13 @@
     position: relative;
     z-index: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 6px;
+    width: 96px;
+    min-height: 84px;
+    padding: 8px 4px;
     background: var(--surface);
     border-right: 2px solid var(--grid-line);
     border-bottom: 2px solid var(--grid-line);
@@ -1361,8 +1444,14 @@
   }
 
   .stack-mono {
+    display: grid;
+    place-items: center;
+    min-width: 30px;
+    height: 30px;
+    padding: 0 4px;
+    border: 2px solid currentColor;
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 500;
     line-height: 1;
     color: var(--muted);
@@ -1370,35 +1459,13 @@
   }
 
   .stack-name {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  .stack-tip {
-    position: absolute;
-    bottom: calc(100% + 10px);
-    left: 50%;
-    z-index: 4;
-    translate: calc(-50% + var(--tip-shift, 0px)) 0;
-    padding: 2px 6px;
-    border: 2px solid var(--ink);
-    background: var(--yellow);
-    color: var(--ink);
-    box-shadow: 2px 2px 0 var(--ink);
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 500;
-    line-height: 1.3;
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 0;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--body);
+    overflow-wrap: anywhere;
   }
 
   /* Keycap lift: hover (fine pointers) or .is-active (touch via StackTips). */
@@ -1419,10 +1486,6 @@
     .stack-tool:hover .stack-mono {
       color: var(--accent);
     }
-
-    .stack-tool:hover .stack-tip {
-      opacity: 1;
-    }
   }
 
   .stack-tool.is-active {
@@ -1440,14 +1503,6 @@
 
   .stack-tool.is-active .stack-mono {
     color: var(--accent);
-  }
-
-  .stack-tool.is-active .stack-tip {
-    opacity: 1;
-  }
-
-  html.stack-tips-off .stack-tip {
-    opacity: 0;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1482,9 +1537,13 @@
       letter-spacing: 0.04em;
     }
 
-    .stack-tools {
-      grid-template-columns: repeat(auto-fill, 56px);
-      grid-auto-rows: 56px;
+    .stack-tool {
+      width: 72px;
+      min-height: 76px;
+    }
+
+    .stack-name {
+      font-size: 10.5px;
     }
 
     .stack-logo {
@@ -1551,6 +1610,12 @@
 
   .contact-link:hover {
     color: var(--accent);
+  }
+
+  .contact-location {
+    margin-bottom: 16px;
+    color: var(--body);
+    font-size: 14px;
   }
 
   .contact-row {
@@ -2259,31 +2324,29 @@ html.lenis body {
     content-visibility: visible;
   }
 
-  .stack-tip,
+  /* Print shows every project: force the collapsed <details> body open and drop its toggle. */
+  .work-more::details-content {
+    content-visibility: visible;
+    display: block;
+    height: auto;
+  }
+
+  .work-more > .work-list {
+    display: flex;
+    margin-top: 36px;
+  }
+
+  .work-more-summary {
+    display: none;
+  }
+
   .stack-sprite {
     display: none !important;
   }
 
   .stack-name {
-    position: static;
-    width: auto;
-    height: auto;
-    margin: 2px 0 0;
-    overflow: visible;
-    clip: auto;
-    white-space: normal;
-    font-family: var(--font-mono);
     font-size: 8px;
-    line-height: 1.2;
     color: var(--text);
-    text-align: center;
-  }
-
-  .stack-tool {
-    flex-direction: column;
-    height: auto;
-    min-height: 64px;
-    padding: 4px 2px;
   }
 
   .stack-slab {
