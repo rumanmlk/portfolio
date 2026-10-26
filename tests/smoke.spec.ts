@@ -389,12 +389,96 @@ test.describe('work', () => {
     await expect(page.getByText('EP.', { exact: true })).toHaveCount(0);
   });
 
+  for (const block of [
+    { name: 'project', root: 'article.project-card', body: '.project-row' },
+    { name: 'experience', root: '.experience-row', body: '.experience-summary' },
+  ]) {
+    test(`${block.name} details are closed on phones until tapped and always shown on desktop`, async ({
+      page,
+    }, testInfo) => {
+      await skipIntro(page);
+      await page.goto('/');
+      const first = page.locator(block.root).first();
+      const body = first.locator(block.body).first();
+      const toggle = first.locator('.mobile-toggle');
+      if (testInfo.project.name === 'mobile') {
+        await expect(body).toBeHidden();
+        await toggle.click();
+        await expect(body).toBeVisible();
+        await toggle.click();
+        await expect(body).toBeHidden();
+      } else {
+        await expect(toggle).toBeHidden();
+        await expect(body).toBeVisible();
+      }
+    });
+  }
+
+  test('tablet width shows every details body without a toggle', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name === 'mobile', 'sets its own viewport');
+    await skipIntro(page);
+    await page.setViewportSize({ width: 768, height: 1024 });
+    await page.goto('/');
+    await expect(page.locator('.mobile-toggle:visible')).toHaveCount(0);
+    await expect(page.locator('.project-row').first()).toBeVisible();
+    await expect(page.locator('.experience-summary').first()).toBeVisible();
+  });
+
   test('print shows every project even while the extras are collapsed', async ({ page }) => {
     await skipIntro(page);
     await page.goto('/');
     await expect(page.locator('details.work-more')).not.toHaveAttribute('open', '');
     await page.emulateMedia({ media: 'print' });
     await expect(page.locator('article.project-card:visible')).toHaveCount(content.projects.length);
+  });
+});
+
+test.describe('mobile header', () => {
+  test('only the nav strip stays pinned and the theme toggle is reachable at the bottom', async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile', 'phone layout only');
+    await skipIntro(page);
+    await page.goto('/');
+    await page.evaluate(() => window.scrollTo(0, 900));
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          Math.round(document.querySelector('.nav-strip')!.getBoundingClientRect().top),
+        ),
+      )
+      .toBe(0);
+    await expect(page.locator('.mobile-name')).not.toBeInViewport();
+    const toggle = page.locator('.footer-theme-toggle');
+    await toggle.click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  });
+});
+
+test.describe('floating email', () => {
+  test('appears after the hero and hides again at Contact', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile', 'phone layout only');
+    await skipIntro(page);
+    await page.goto('/');
+    const wrap = page.locator('.floating-email');
+    await expect(wrap).toHaveAttribute('data-visible', 'false');
+    await expect(wrap).toHaveJSProperty('inert', true);
+    await page.evaluate(() => document.getElementById('work')!.scrollIntoView());
+    await expect(wrap).toHaveAttribute('data-visible', 'true');
+    await expect(wrap.getByRole('link', { name: content.ui.emailMe })).toHaveAttribute(
+      'href',
+      `mailto:${content.site.email}`,
+    );
+    await page.evaluate(() => document.getElementById('contact')!.scrollIntoView());
+    await expect(wrap).toHaveAttribute('data-visible', 'false');
+  });
+
+  test('is not shown with the desktop sidebar', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name === 'mobile', 'desktop layout only');
+    await skipIntro(page);
+    await page.goto('/');
+    await page.evaluate(() => document.getElementById('work')!.scrollIntoView());
+    await expect(page.locator('.floating-email')).toBeHidden();
   });
 });
 

@@ -1,3 +1,4 @@
+import { MobileDetails } from '@/components/sections/MobileDetails';
 import { Reveal, RevealLines } from '@/components/ui/Reveal';
 import { content, type Role } from '@/content/content';
 
@@ -44,13 +45,15 @@ export function Experience() {
             <div className="experience-body">
               <h3 className="experience-role">{role.role}</h3>
               <p className="experience-company mono text-muted">{role.company}</p>
-              <p className="experience-summary">{role.summary}</p>
-              {role.projects?.length ? (
-                <p className="experience-projects mono-sm">
-                  <span className="text-muted">{content.ui.projectsLabel}:</span>{' '}
-                  {role.projects.join(' / ')}
-                </p>
-              ) : null}
+              <MobileDetails>
+                <p className="experience-summary">{role.summary}</p>
+                {role.projects?.length ? (
+                  <p className="experience-projects mono-sm">
+                    <span className="text-muted">{content.ui.projectsLabel}:</span>{' '}
+                    {role.projects.join(' / ')}
+                  </p>
+                ) : null}
+              </MobileDetails>
             </div>
           </Reveal>
         ))}

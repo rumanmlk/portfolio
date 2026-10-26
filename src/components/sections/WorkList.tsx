@@ -36,10 +36,10 @@ export function WorkList({ projects }: Props) {
       {rest.length > 0 ? (
         <details className="work-more">
           <summary className="btn btn-surface work-more-summary">
-            <span className="work-more-open">
+            <span className="toggle-open">
               {ui.moreProjects} ({rest.length})
             </span>
-            <span className="work-more-close">{ui.fewerProjects}</span>
+            <span className="toggle-close">{ui.fewerProjects}</span>
           </summary>
           <Cards projects={rest} start={split} />
         </details>
