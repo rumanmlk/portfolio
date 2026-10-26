@@ -1,3 +1,4 @@
+import { MobileDetails } from '@/components/sections/MobileDetails';
 import { Sticker } from '@/components/ui/Sticker';
 import { Chip, TagList } from '@/components/ui/Tag';
 import { content, type Project } from '@/content/content';
@@ -35,54 +36,56 @@ export function ProjectCard({ project, index }: Props) {
           <span className="mono-sm text-muted">{project.ownership}</span>
         </div>
 
-        <dl className="project-rows">
-          <div className="project-row">
-            <dt>
-              <Sticker fill="yellow">{ui.problem}</Sticker>
-            </dt>
-            <dd>{project.problem}</dd>
-          </div>
-          {project.result ? (
+        <MobileDetails>
+          <dl className="project-rows">
             <div className="project-row">
               <dt>
-                <Sticker fill="yellow">{ui.result}</Sticker>
+                <Sticker fill="yellow">{ui.problem}</Sticker>
               </dt>
-              <dd>{project.result}</dd>
+              <dd>{project.problem}</dd>
             </div>
+            {project.result ? (
+              <div className="project-row">
+                <dt>
+                  <Sticker fill="yellow">{ui.result}</Sticker>
+                </dt>
+                <dd>{project.result}</dd>
+              </div>
+            ) : null}
+            {project.validation ? (
+              <div className="project-row">
+                <dt>
+                  <Sticker fill="yellow">{ui.validation}</Sticker>
+                </dt>
+                <dd>{project.validation}</dd>
+              </div>
+            ) : null}
+          </dl>
+
+          {project.flow && project.flow.length > 0 ? (
+            <ol className="project-flow" role="list" aria-label={`${ui.flow}: ${project.title}`}>
+              {project.flow.map((step, i) => (
+                <li key={`${step}-${i}`} className="chip">
+                  {step}
+                </li>
+              ))}
+            </ol>
           ) : null}
-          {project.validation ? (
-            <div className="project-row">
-              <dt>
-                <Sticker fill="yellow">{ui.validation}</Sticker>
-              </dt>
-              <dd>{project.validation}</dd>
-            </div>
+
+          <TagList items={project.stack} label={`Stack for ${project.title}`} />
+
+          {links.length > 0 ? (
+            <ul className="project-links" aria-label={`Links for ${project.title}`}>
+              {links.map((l) => (
+                <li key={l.key}>
+                  <a href={l.href} target="_blank" rel="noopener noreferrer">
+                    {ui.links[l.key]}
+                  </a>
+                </li>
+              ))}
+            </ul>
           ) : null}
-        </dl>
-
-        {project.flow && project.flow.length > 0 ? (
-          <ol className="project-flow" role="list" aria-label={`${ui.flow}: ${project.title}`}>
-            {project.flow.map((step, i) => (
-              <li key={`${step}-${i}`} className="chip">
-                {step}
-              </li>
-            ))}
-          </ol>
-        ) : null}
-
-        <TagList items={project.stack} label={`Stack for ${project.title}`} />
-
-        {links.length > 0 ? (
-          <ul className="project-links" aria-label={`Links for ${project.title}`}>
-            {links.map((l) => (
-              <li key={l.key}>
-                <a href={l.href} target="_blank" rel="noopener noreferrer">
-                  {ui.links[l.key]}
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : null}
+        </MobileDetails>
       </div>
     </article>
   );

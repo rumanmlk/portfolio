@@ -10,6 +10,7 @@ import { whenIdle } from '@/lib/device';
 /** Non-critical, lazily loaded behaviors. Each one fails in isolation (B17). */
 const SmoothScroll = dynamic(() => import('@/components/shell/SmoothScroll'), { ssr: false });
 const StackTips = dynamic(() => import('@/components/sections/StackTips'), { ssr: false });
+const FloatingEmail = dynamic(() => import('@/components/shell/FloatingEmail'), { ssr: false });
 
 export function Enhancements() {
   const [ready, setReady] = useState(false);
@@ -24,6 +25,7 @@ export function Enhancements() {
           <>
             <SmoothScroll />
             <StackTips />
+            <FloatingEmail />
           </>
         ) : null}
       </ErrorBoundary>
