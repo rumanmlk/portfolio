@@ -6,7 +6,7 @@ This repository is a static personal portfolio. It has no backend, database, use
 
 Please do not open a public issue for a security problem.
 
-Report it privately through GitHub: open the repository's **Security** tab and choose **Report a vulnerability**. If that option is unavailable, use the contact section on the [live site](https://rumanmalik.vercel.app) and say that it is a security report.
+Report it privately by email to [rumanmlk123@gmail.com](mailto:rumanmlk123@gmail.com) with "Security report" in the subject. You can also use the repository's **Security** tab and choose **Report a vulnerability** when it is available.
 
 I will acknowledge a report within a few days. Because the site is static and personal, fixes are made on a best-effort basis.
 
