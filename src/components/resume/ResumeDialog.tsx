@@ -114,7 +114,10 @@ export default function ResumeDialog({ request }: Props) {
               {ui.openTab}
             </a>
           </div>
-          <p className="mono-sm text-muted">{ui.hint}</p>
+          <p className="mono-sm text-muted">
+            {ui.hint}
+            <span className="keyboard-only">{ui.hintKeyboard}</span>
+          </p>
         </div>
       </div>
     </dialog>

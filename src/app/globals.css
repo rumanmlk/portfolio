@@ -389,9 +389,11 @@
     will-change: auto;
   }
 
-  .btn:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: var(--shadow-box-hover);
+  @media (hover: hover) {
+    .btn:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: var(--shadow-box-hover);
+    }
   }
 
   .btn:active {
@@ -416,8 +418,10 @@
     box-shadow: var(--shadow-small);
   }
 
-  .btn-small:hover {
-    box-shadow: var(--shadow-box);
+  @media (hover: hover) {
+    .btn-small:hover {
+      box-shadow: var(--shadow-box);
+    }
   }
 
   /* Stickers and chips */
@@ -778,14 +782,16 @@
     }
   }
 
-  .nav-link:hover {
-    transform: translate(-3px, -3px);
-    border-color: var(--line);
-    box-shadow: var(--shadow-small);
-  }
+  @media (hover: hover) {
+    .nav-link:hover {
+      transform: translate(-3px, -3px);
+      border-color: var(--line);
+      box-shadow: var(--shadow-small);
+    }
 
-  .nav-link.is-active:hover {
-    box-shadow: var(--shadow-box);
+    .nav-link.is-active:hover {
+      box-shadow: var(--shadow-box);
+    }
   }
 
   .site-nav .nav-link {
@@ -1151,9 +1157,11 @@
       box-shadow 150ms var(--ease);
   }
 
-  .project-card:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: var(--shadow-hover);
+  @media (hover: hover) {
+    .project-card:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: var(--shadow-hover);
+    }
   }
 
   .project-num {
@@ -1814,8 +1822,10 @@
     max-width: 100%;
   }
 
-  .contact-link:hover {
-    color: var(--accent);
+  @media (hover: hover) {
+    .contact-link:hover {
+      color: var(--accent);
+    }
   }
 
   .contact-location {
@@ -2368,6 +2378,13 @@ html[data-intro='on'] #site {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+/* Keyboard hints (Esc, Enter) are meaningless on touch devices. Must stay after .intro-key. */
+@media not all and (hover: hover) and (pointer: fine) {
+  .keyboard-only {
+    display: none;
+  }
 }
 
 .intro-keycap {
