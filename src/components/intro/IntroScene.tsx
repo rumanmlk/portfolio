@@ -203,7 +203,7 @@ export function IntroScene({ lines, avatarRef, skipRef, onEnter, onSkip, exiting
         </div>
         <div className="intro-footer mono text-muted">
           <span>{ui.intro.clickToContinue}</span>
-          <span className="intro-key">
+          <span className="intro-key keyboard-only">
             {ui.intro.press} <kbd className="intro-keycap">{ui.intro.enter}</kbd>
           </span>
         </div>
