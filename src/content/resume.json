@@ -8,7 +8,7 @@
     "github": "github.com/rumanmlk",
     "website": ""
   },
-  "summary": "Software engineer at ExD shipping production demand forecasting (PythinQ: FastAPI, React, LightGBM, PostgreSQL) and multi-agent LLM systems (Omnix: Django, 4 LLM providers).",
+  "summary": "Software engineer shipping production ML forecasting at ExD and building evaluated LLM applications (Lexio, a live cited-RAG app). Strong in Python and TypeScript backends, retrieval and LLM evaluation, and full-stack delivery.",
   "experience": [
     {
       "company": "Excellence Delivered (ExD)",
@@ -19,25 +19,24 @@
       "projects": [
         {
           "name": "PythinQ",
-          "stack": "FastAPI, React/TypeScript, Vite, PostgreSQL, LightGBM, Optuna, Docker",
+          "stack": "FastAPI, React/TypeScript, Vite, Tailwind CSS, PostgreSQL, LightGBM, Optuna, Docker",
           "start": "Mar 2026",
           "end": "Present",
           "bullets": [
-            "Shipped a 4-grain daily demand-forecasting product on about 5M sales rows so planners upload, train, forecast, and review a calendar-year holdout in one UI.",
-            "Routed models by demand shape: Huber LightGBM globally, a quantile specialist for high-variance Material SKUs, and two-stage occurrence/magnitude models for 10,000+ sparse series; Optuna with 7-fold walk-forward on lag, calendar, event, and weather features.",
-            "Implemented a Medallion PostgreSQL store, viewer/analyst/admin RBAC, and a Postgres-backed async worker so ingest, training, and multi-day forecasts keep running after the HTTP request returns.",
-            "Added predecessor SKU maps that blend history into new packs without merging identities. CI (pytest, Ruff, basedpyright) catches missing weather/events, split-mode errors, and train/serve schema drift before deployment."
+            "Built a 4-grain daily demand-forecasting platform (4.9M sales rows) for a beverage-bottling client that forecast manually in Excel; on a 2025 holdout, material-level WAPE is 36% vs 52% for a 28-day average (one-step-ahead).",
+            "Routed by demand shape: Huber LightGBM globally, a quantile model for 27 high-variance Material SKUs, and two-stage occurrence/magnitude models for 10,000+ limited-history series across three grains; Optuna with 7-fold walk-forward.",
+            "Implemented a Medallion PostgreSQL store (SQLAlchemy), viewer/analyst/admin RBAC, and a Postgres-backed async worker so ingest, training, and multi-day forecasts run outside the HTTP request.",
+            "Added a planner workflow (draft/publish, audited edits, 7-business-day freeze, needs-attention flags) and leakage-safe pandas features with hard-fail checks for missing weather/events, covered by 2,300+ tests (pytest, Ruff, basedpyright)."
           ]
         },
         {
           "name": "Omnix AI",
-          "stack": "Django, PostgreSQL, OpenAI, Anthropic, Gemini, xAI",
+          "stack": "Django, PostgreSQL, JavaScript, OpenAI, Anthropic, Gemini, xAI",
           "start": "Jun 2026",
-          "end": "Present",
+          "end": "Jul 2026",
           "bullets": [
-            "Implemented one LLM routing layer across 4 providers (OpenAI, Anthropic, Gemini, xAI) with primary/fallback pairs and retries, so rate limits or provider outages fail over without aborting the panel.",
-            "Rebuilt panel creation and debate launch as guided wizards, enforcing Super Expert + 3 to 9 expert rosters and a model assignment for every adviser before a debate can launch.",
-            "Moved debate start/continue, persona generation, and library batch work onto an async worker with per-user job locks so multi-minute runs survive HTTP timeouts."
+            "Built the UI overhaul of a multi-model AI debate app (Django templates, vanilla JavaScript): new stylesheet, 5-step panel-creation wizard, debate-room list, and sidebar.",
+            "Defined the roster rules (1 Super Expert plus 3-9 debate experts), added persona management and debate-output normalization, and fixed persona-generation token limits for Anthropic models."
           ]
         }
       ]
@@ -49,8 +48,7 @@
       "start": "Dec 2025",
       "end": "Feb 2026",
       "bullets": [
-        "Built a multi-tenant eCommerce platform with Next.js and PostgreSQL (isolated storefronts/admin on shared infrastructure, plus single-tenant mode) and a pluggable upload layer (local filesystem and MinIO).",
-        "Set up GitHub Actions to build, test, and deploy to the dev environment on every push, with manual promotion to staging/main."
+        "Built a multi-tenant Next.js/PostgreSQL eCommerce platform (isolated storefronts and admin, single-tenant mode, pluggable uploads on local disk or MinIO) with GitHub Actions CI/CD: deploy to dev on every push, manual promotion to staging."
       ]
     },
     {
@@ -60,8 +58,7 @@
       "start": "Sep 2025",
       "end": "Oct 2025",
       "bullets": [
-        "Built and deployed a full-stack app (React, Node.js, MongoDB Atlas) with Docker and GitHub Actions to Docker Hub and Render; converted Django advertisement-marketplace pages to a Django + React (Vite) hybrid.",
-        "Tracked performance and reliability with Loki, Prometheus and Grafana."
+        "Built and deployed a full-stack app (React, Node.js, MongoDB Atlas) with Docker and GitHub Actions to Docker Hub and Render; converted Django advertisement-marketplace pages to a Django + React (Vite) hybrid."
       ]
     },
     {
@@ -71,11 +68,23 @@
       "start": "Jun 2024",
       "end": "Sep 2024",
       "bullets": [
-        "Built a DGA (Domain Generation Algorithm) detection system using DeepD2V embeddings on 200k domain records, reaching 0.94 holdout accuracy and outperforming n-gram and reputation baselines."
+        "Built a DGA (Domain Generation Algorithm) detection system using DeepD2V embeddings on 200,000+ domain records, outperforming n-gram and Word2Vec baselines."
       ]
     }
   ],
   "projects": [
+    {
+      "name": "Lexio, Cited Legal Q&A",
+      "stack": "Next.js, FastAPI, PostgreSQL, pgvector, RAG, Groq, Gemini embeddings, Vercel, Neon, Langfuse",
+      "start": "Oct 2026",
+      "end": "Nov 2026",
+      "bullets": [
+        "Rebuilt a university Streamlit/FAISS prototype into a deployed app that answers legal-PDF questions with Groq over Gemini embeddings, citing the exact source page for every claim and refusing when evidence is weak.",
+        "Benchmarked vector, keyword and hybrid (RRF) retrieval on 106 gold-page questions with 95% confidence intervals; fixing the keyword ranker lifted its MRR from 0.54 to 0.79 (first 73 questions), and LLM query rewriting raised follow-up retrieval from 7/11 to 11/11.",
+        "Built the eval harness and published failures: a cited source is on the gold page in 93% of answers (99/106); caught a citation-parser bug that under-reported grounding; a retrieval regression check runs weekly in GitHub Actions.",
+        "Added Google sign-in with per-user documents, direct-to-Blob uploads, rate limits and daily budget guards for free-tier quotas, prompt-injection fencing, and Langfuse tracing (OpenTelemetry); EEA visitors fall back to keyword search to respect Gemini's terms."
+      ]
+    },
     {
       "name": "Rice Quality Check (FYP)",
       "stack": "Computer Vision, FastAPI, React, MongoDB",
@@ -83,15 +92,6 @@
       "end": "Apr 2025",
       "bullets": [
         "Built an AI system in a 3-member team to classify 8 Pakistani rice varieties and detect adulteration, reaching 92% average accuracy across 6 fine-tuned models on 10,000+ grain images."
-      ]
-    },
-    {
-      "name": "Lexio AI Legal Counsel",
-      "stack": "RAG, LangChain, FAISS, Streamlit, Ollama, Groq",
-      "start": "Feb 2025",
-      "end": "Apr 2025",
-      "bullets": [
-        "Built document-grounded legal Q&A: a FAISS RAG pipeline answers only from the uploaded file and declines when the answer is not present."
       ]
     }
   ],
@@ -106,14 +106,19 @@
   ],
   "skills": [
     { "label": "Languages", "items": "Python, TypeScript, JavaScript, SQL" },
-    { "label": "Backend", "items": "FastAPI, Django, SQLAlchemy, Node.js" },
+    {
+      "label": "Backend & Data",
+      "items": "FastAPI, Django, SQLAlchemy, Node.js, PostgreSQL, MongoDB"
+    },
     { "label": "Frontend", "items": "React, Next.js, Vite, Tailwind CSS" },
-    { "label": "Databases", "items": "PostgreSQL, MongoDB" },
     {
       "label": "AI / ML",
-      "items": "LightGBM, Optuna, pandas, scikit-learn, LangChain, RAG, FAISS"
+      "items": "Forecasting, LightGBM, pandas, Computer Vision, RAG, embeddings, pgvector, hybrid search, LLM evaluation"
     },
-    { "label": "LLM APIs", "items": "OpenAI, Anthropic, Gemini, xAI" },
-    { "label": "DevOps", "items": "Docker, GitHub Actions, pytest, Ruff, MinIO" }
+    { "label": "LLM APIs", "items": "OpenAI, Anthropic, Gemini, xAI, Groq" },
+    {
+      "label": "DevOps",
+      "items": "Docker, GitHub Actions, pytest, Ruff, MinIO, Vercel, Neon, Langfuse"
+    }
   ]
 }

@@ -22,7 +22,7 @@ export type Project = {
   /** One line, with numbers when you have them. */
   result?: string;
   stack: string[];
-  links?: { live?: string; code?: string; paper?: string };
+  links?: { live?: string; code?: string; evaluation?: string; paper?: string };
   /** NDA work: shows a PRIVATE chip. Add `links` only with written approval from the owner. */
   confidential?: boolean;
   /** Shown in the first, always-visible group of Work. The rest sit behind "More projects". */
@@ -46,6 +46,16 @@ export type Role = {
   summary: string;
   /** Titles of Work projects built in this role (display only). */
   projects?: string[];
+};
+
+export type Education = {
+  school: string;
+  /** Short form shown in the page and JSON-LD. */
+  shortName: string;
+  degree: string;
+  /** 'YYYY-MM', matches the resume. */
+  start: string;
+  end: string;
 };
 
 export type Post = { title: string; date: string; url: string };
@@ -72,7 +82,7 @@ export const content = {
     shortName: chrome.shortName,
     title: 'Software Engineer',
     description:
-      'Software engineer in Lahore building production ML and LLM systems: demand forecasting and multi-provider LLM routing with FastAPI, React, LightGBM and PostgreSQL.',
+      'Software engineer in Lahore shipping production ML forecasting at ExD and building evaluated LLM applications such as Lexio, a live cited-RAG app. Python and TypeScript backends, retrieval and LLM evaluation, full-stack delivery.',
     email: 'rumanmlk123@gmail.com',
     url: SITE_URL,
     location: 'Lahore, Pakistan',
@@ -91,13 +101,15 @@ export const content = {
       'full-stack developer',
       'Python',
       'TypeScript',
-      'PyTorch',
       'FastAPI',
       'React',
       'PostgreSQL',
       'LightGBM',
       'Docker',
       'LLM',
+      'RAG',
+      'pgvector',
+      'Next.js',
       'Lahore',
       'Pakistan',
     ],
@@ -106,13 +118,13 @@ export const content = {
   socials: {
     github: 'https://github.com/rumanmlk',
     linkedin: 'https://www.linkedin.com/in/ruman-malik',
-    resume: '/resume.pdf?v=5',
+    resume: '/resume.pdf?v=6',
   },
 
   hero: {
     lines: ['I build AI', 'that ships.'],
     pitch:
-      'Software engineer at ExD. I build the parts that keep ML and LLM products alive in production: model routing, provider failover, async workers and CI that catches drift before users do.',
+      'Software engineer at ExD. I ship production ML forecasting and build evaluated LLM applications like Lexio, a live cited-RAG app. Strong in Python and TypeScript backends, retrieval and LLM evaluation, and full-stack delivery.',
   },
 
   intro: {
@@ -121,70 +133,89 @@ export const content = {
 
   projects: [
     {
+      id: 'lexio',
+      title: 'Lexio: Cited Legal Q&A',
+      kind: 'personal',
+      ownership: 'Rebuilt from a university prototype',
+      problem:
+        'Answer questions about legal PDFs with the exact source page cited for every claim, and refuse when the evidence is weak.',
+      result:
+        'A deployed app that answers with Groq over Gemini embeddings. Fixing the keyword ranker lifted its MRR from 0.54 to 0.79 (first 73 questions), and LLM query rewriting raised follow-up retrieval from 7/11 to 11/11. Adds Google sign-in with per-user documents, direct-to-Blob uploads, rate limits and daily budget guards for free-tier quotas, prompt-injection fencing and Langfuse tracing (OpenTelemetry). EEA visitors fall back to keyword search to respect the Gemini terms. Sample documents need no sign-in.',
+      stack: [
+        'Next.js',
+        'FastAPI',
+        'PostgreSQL',
+        'pgvector',
+        'RAG',
+        'Groq',
+        'Gemini embeddings',
+        'Vercel',
+        'Neon',
+        'Langfuse',
+      ],
+      headline: 'Cited source is on the gold page in 93% of answers (99/106)',
+      featured: true,
+      flow: [
+        'Legal PDF',
+        'Embed with Gemini',
+        'Retrieve source pages',
+        'Answer with Groq, citing the page',
+        'Refuse when evidence is weak',
+      ],
+      validation:
+        'Vector, keyword and hybrid (RRF) retrieval benchmarked on 106 gold-page questions with 95% confidence intervals; the eval harness caught a citation-parser bug that under-reported grounding, and a retrieval regression check runs weekly in GitHub Actions. Limits: the evaluation set is small and written by me, hybrid and vector-only retrieval are statistically tied, and there is no OCR for scanned PDFs.',
+      links: {
+        live: 'https://ask-lexio.vercel.app',
+        code: 'https://github.com/rumanmlk/Lexio',
+        evaluation: 'https://github.com/rumanmlk/Lexio/blob/main/docs/evaluation.md',
+      },
+    },
+    {
       id: 'pythinq',
       title: 'PythinQ demand forecasting',
       kind: 'company',
-      ownership: 'Built end to end at ExD',
+      ownership: 'Built at ExD',
       problem:
-        'Planners at a beverage company needed daily forecasts across 4 grains for about 5M sales rows, including 10,000+ sparse series that one global model gets wrong.',
+        'A beverage-bottling client forecast demand manually in Excel and needed daily forecasts at 4 grains from 4.9M sales rows.',
       result:
-        'Routes each series to the right LightGBM model (Huber, quantile, two-stage occurrence/magnitude), tuned with Optuna and 7-fold walk-forward validation; planners upload, train, forecast and review a full-year holdout in one UI.',
-      stack: ['FastAPI', 'React', 'TypeScript', 'PostgreSQL', 'LightGBM', 'Optuna', 'Docker'],
-      headline: '5M sales rows, 4 forecast grains, 10,000+ series',
+        'Routes by demand shape: Huber LightGBM globally, a quantile model for 27 high-variance Material SKUs, and two-stage occurrence/magnitude models for 10,000+ limited-history series across three grains. Runs on a Medallion PostgreSQL store with viewer/analyst/admin RBAC and a Postgres-backed async worker, with a planner workflow: draft/publish, audited edits, a 7-business-day freeze and needs-attention flags.',
+      stack: [
+        'FastAPI',
+        'React',
+        'TypeScript',
+        'Vite',
+        'Tailwind CSS',
+        'PostgreSQL',
+        'LightGBM',
+        'Optuna',
+        'Docker',
+      ],
+      headline: 'Material-level WAPE 36% vs 52% for a 28-day average',
       featured: true,
       flow: [
-        'Upload sales data',
+        'Ingest sales data',
         'Route each series by demand shape',
         'Train LightGBM (Huber, quantile, two-stage)',
-        'Walk-forward tuning with Optuna',
-        'Review a full-year holdout',
+        'Tune with Optuna, 7-fold walk-forward',
+        'Planners draft, edit and publish',
       ],
       validation:
-        '7-fold walk-forward validation, then a full-year holdout that planners review in the UI.',
+        '2025 holdout, one-step-ahead: material-level WAPE is 36% vs 52% for a 28-day average. Leakage-safe pandas features with hard-fail checks for missing weather/events, covered by 2,300+ tests (pytest, Ruff, basedpyright).',
       confidential: true,
     },
     {
       id: 'omnix',
       title: 'Omnix AI',
       kind: 'company',
-      ownership: 'Core contributor at ExD',
+      ownership: 'Built the UI overhaul at ExD',
       problem:
-        'A panel of LLM expert personas debates a policy question over three rounds, so one provider outage or rate limit used to kill a multi-minute debate mid-run.',
+        'A multi-model AI debate app needed its UI overhauled and clear rules for who sits on a debate panel.',
       result:
-        'One routing layer across OpenAI, Anthropic, Gemini and xAI with primary/fallback pairs and retries, async jobs with per-user locks, and a Django test suite covering roster rules, fallback logic and cost accounting.',
-      stack: ['Django', 'PostgreSQL', 'OpenAI', 'Anthropic', 'Gemini', 'xAI'],
-      headline: '4 LLM providers, automatic failover',
+        'New stylesheet, a 5-step panel-creation wizard, a debate-room list and a sidebar in Django templates and vanilla JavaScript. Defined the roster rules (1 Super Expert plus 3-9 debate experts), added persona management and debate-output normalization, and fixed persona-generation token limits for Anthropic models.',
+      stack: ['Django', 'PostgreSQL', 'JavaScript', 'OpenAI', 'Anthropic', 'Gemini', 'xAI'],
+      headline: '5-step panel wizard, 1 Super Expert plus 3-9 experts',
       featured: true,
-      flow: [
-        'Policy question',
-        'Routing layer: primary and fallback',
-        'OpenAI, Anthropic, Gemini, xAI',
-        'Async worker with per-user locks',
-        'Three-round debate',
-      ],
-      validation: 'Django test suite covering roster rules, fallback logic and cost accounting.',
       confidential: true,
-    },
-    {
-      id: 'lexio',
-      title: 'Lexio AI Legal Counsel',
-      kind: 'personal',
-      ownership: 'Built from scratch',
-      problem:
-        'Legal Q&A assistants hallucinate; users need answers grounded in the document they uploaded and nothing else.',
-      result:
-        'FAISS retrieval with MMR over PDF chunks feeds a prompt that answers only from context and declines when the answer is not present.',
-      stack: ['LangChain', 'FAISS', 'Ollama', 'Groq', 'Streamlit'],
-      headline: 'Answers only from your document, or declines',
-      featured: true,
-      flow: [
-        'Upload PDF',
-        'Chunk and embed',
-        'FAISS retrieval with MMR',
-        'Answer only from context',
-        'Decline when absent',
-      ],
-      links: { code: 'https://github.com/rumanmlk/Lexio' },
     },
     {
       id: 'dga-detection',
@@ -194,12 +225,12 @@ export const content = {
       problem:
         'Malware uses domain generation algorithms to churn out command-and-control domains faster than blocklists can keep up.',
       result:
-        'DeepD2V (Word2Vec + 1D CNN) reached 0.94 holdout accuracy on 200k domains, beating n-gram and reputation baselines; shipped with a Flask API and React UI.',
+        'DeepD2V (Word2Vec + 1D CNN) reached 0.94 holdout accuracy on 200k domains, beating n-gram and Word2Vec baselines; shipped with a Flask API and React UI.',
       stack: ['Python', 'Word2Vec', 'Keras', 'Flask', 'React'],
       headline: '0.94 holdout accuracy on 200k domains',
       featured: true,
       flow: ['Domain name', 'Word2Vec embedding', '1D CNN classifier', 'Flask API and React UI'],
-      validation: 'Held-out 200k-domain set, compared against n-gram and reputation baselines.',
+      validation: 'Held-out 200k-domain set, compared against n-gram and Word2Vec baselines.',
       links: { code: 'https://github.com/rumanmlk/DGA-Detection' },
     },
     {
@@ -219,13 +250,13 @@ export const content = {
       id: 'multi-tenant-ecommerce',
       title: 'Multi-tenant eCommerce platform',
       kind: 'company',
-      ownership: 'Built from scratch at Core Edge Solutions',
+      ownership: 'Built at Core Edge Solutions',
       problem:
-        'One codebase had to serve many storefronts and admin panels on shared infrastructure, and also run in single-tenant mode.',
+        'Serve isolated storefronts and admin panels for many tenants from one platform, and also run in single-tenant mode.',
       result:
-        'Isolated per-tenant storefronts and admin on PostgreSQL, a pluggable upload layer (local filesystem or MinIO), and GitHub Actions that build, test and deploy on every push.',
+        'A multi-tenant Next.js and PostgreSQL platform with isolated storefronts and admin, a single-tenant mode, pluggable uploads on local disk or MinIO, and GitHub Actions CI/CD: deploy to dev on every push, manual promotion to staging.',
       stack: ['Next.js', 'PostgreSQL', 'MinIO', 'GitHub Actions'],
-      headline: 'One codebase, many tenants',
+      headline: 'Isolated storefronts and admin per tenant',
       confidential: true,
     },
     {
@@ -233,10 +264,8 @@ export const content = {
       title: 'Rice Quality Check',
       kind: 'university',
       ownership: 'Final year project, team of 3',
-      problem:
-        'Classify 8 Pakistani rice varieties and detect adulteration from grain images, a check that mills and buyers still do by eye.',
-      result:
-        '92% average accuracy across 6 fine-tuned vision models on 10,000+ captured grain images, served through a FastAPI backend and a React UI.',
+      problem: 'Classify 8 Pakistani rice varieties and detect adulteration from grain images.',
+      result: '92% average accuracy across 6 fine-tuned models on 10,000+ grain images.',
       stack: ['Computer Vision', 'FastAPI', 'React', 'MongoDB'],
       headline: '92% average accuracy, 8 rice varieties',
     },
@@ -249,7 +278,7 @@ export const content = {
       start: '2026-03',
       end: 'Present',
       summary:
-        'Ships ML and LLM products end to end, and mentored the intern cohort behind the internal Odoo platform.',
+        'Builds a daily demand-forecasting platform for a beverage-bottling client, built the UI overhaul of a multi-model AI debate app, and mentored the intern cohort behind the internal Odoo platform.',
       projects: ['PythinQ demand forecasting', 'Omnix AI', 'ExD Odoo operations platform'],
     },
     {
@@ -258,7 +287,7 @@ export const content = {
       start: '2025-12',
       end: '2026-02',
       summary:
-        'Built a multi-tenant eCommerce platform with a pluggable upload layer and GitHub Actions deploys.',
+        'Built a multi-tenant Next.js/PostgreSQL eCommerce platform with pluggable uploads and GitHub Actions CI/CD: deploy to dev on every push, manual promotion to staging.',
       projects: ['Multi-tenant eCommerce platform'],
     },
     {
@@ -267,7 +296,7 @@ export const content = {
       start: '2025-09',
       end: '2025-10',
       summary:
-        'Shipped a React, Node.js and MongoDB app with Docker and GitHub Actions, converted Django marketplace pages to a Django + React hybrid, and tracked reliability with Loki, Prometheus and Grafana.',
+        'Built and deployed a full-stack app (React, Node.js, MongoDB Atlas) with Docker and GitHub Actions to Docker Hub and Render, and converted Django advertisement-marketplace pages to a Django + React (Vite) hybrid.',
     },
     {
       company: 'Ebryx',
@@ -275,10 +304,20 @@ export const content = {
       start: '2024-06',
       end: '2024-09',
       summary:
-        'Built a DGA detection system on 200k domain records that beat n-gram and reputation baselines.',
+        'Built a DGA (Domain Generation Algorithm) detection system using DeepD2V embeddings on 200,000+ domain records, outperforming n-gram and Word2Vec baselines.',
       projects: ['DGA Domain Detection'],
     },
   ] satisfies Role[] as Role[],
+
+  education: [
+    {
+      school: 'FAST National University of Computer and Emerging Sciences',
+      shortName: 'FAST-NUCES',
+      degree: 'BS Computer Science',
+      start: '2021-08',
+      end: '2025-06',
+    },
+  ] satisfies Education[] as Education[],
 
   stack: [
     {
@@ -286,30 +325,42 @@ export const content = {
       items: [
         { name: 'Python', icon: 'python' },
         { name: 'TypeScript', icon: 'typescript' },
-        { name: 'Rust', icon: 'rust' },
+        { name: 'JavaScript', icon: 'javascript' },
+        { name: 'SQL', mono: 'SQL' },
+      ],
+    },
+    {
+      group: 'BACKEND & DATA',
+      items: [
+        { name: 'FastAPI', icon: 'fastapi' },
+        { name: 'Django', icon: 'django' },
+        { name: 'SQLAlchemy', icon: 'sqlalchemy' },
+        { name: 'Node.js', icon: 'nodedotjs' },
+        { name: 'PostgreSQL', icon: 'postgresql' },
+        { name: 'MongoDB', icon: 'mongodb' },
+      ],
+    },
+    {
+      group: 'FRONTEND',
+      items: [
+        { name: 'React', icon: 'react' },
+        { name: 'Next.js', icon: 'nextdotjs' },
+        { name: 'Vite', icon: 'vite' },
+        { name: 'Tailwind CSS', icon: 'tailwindcss' },
       ],
     },
     {
       group: 'AI / ML',
       items: [
-        { name: 'PyTorch', icon: 'pytorch' },
-        { name: 'scikit-learn', icon: 'scikitlearn' },
-        { name: 'pandas', icon: 'pandas' },
+        { name: 'Forecasting', mono: 'FCST' },
         { name: 'LightGBM', mono: 'LGBM' },
-        { name: 'Optuna', icon: 'optuna' },
-        { name: 'LangChain', icon: 'langchain' },
-        { name: 'FAISS', icon: 'faiss' },
-      ],
-    },
-    {
-      group: 'BACKEND',
-      items: [
-        { name: 'FastAPI', icon: 'fastapi' },
-        { name: 'Django', icon: 'django' },
-        { name: 'Node.js', icon: 'nodedotjs' },
-        { name: 'PostgreSQL', icon: 'postgresql' },
-        { name: 'MongoDB', icon: 'mongodb' },
-        { name: 'MinIO', icon: 'minio' },
+        { name: 'pandas', icon: 'pandas' },
+        { name: 'Computer Vision', mono: 'CV' },
+        { name: 'RAG', mono: 'RAG' },
+        { name: 'Embeddings', mono: 'EMB' },
+        { name: 'pgvector', mono: 'PGV' },
+        { name: 'Hybrid search', mono: 'HYB' },
+        { name: 'LLM evaluation', mono: 'EVAL' },
       ],
     },
     {
@@ -319,22 +370,20 @@ export const content = {
         { name: 'Anthropic', icon: 'anthropic' },
         { name: 'Gemini', icon: 'googlegemini' },
         { name: 'xAI', icon: 'xai' },
-      ],
-    },
-    {
-      group: 'FRONTEND',
-      items: [
-        { name: 'React', icon: 'react' },
-        { name: 'Next.js', icon: 'nextdotjs' },
-        { name: 'Tailwind CSS', icon: 'tailwindcss' },
+        { name: 'Groq', mono: 'GROQ' },
       ],
     },
     {
       group: 'DEVOPS',
       items: [
         { name: 'Docker', icon: 'docker' },
-        { name: 'Kubernetes', icon: 'kubernetes' },
         { name: 'GitHub Actions', icon: 'githubactions' },
+        { name: 'pytest', icon: 'pytest' },
+        { name: 'Ruff', icon: 'ruff' },
+        { name: 'MinIO', icon: 'minio' },
+        { name: 'Vercel', icon: 'vercel' },
+        { name: 'Neon', icon: 'neon' },
+        { name: 'Langfuse', mono: 'LF' },
       ],
     },
   ] satisfies StackGroup[],
@@ -367,6 +416,7 @@ type ContentShape = {
   intro: { lines: readonly string[] };
   projects: Project[];
   experience: Role[];
+  education: Education[];
   stack: readonly StackGroup[];
   writing: Post[];
   features: { intro: boolean; planet: boolean; smoothScroll: boolean };

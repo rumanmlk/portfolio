@@ -121,7 +121,7 @@ const items = readStackItems(source);
 const catalog = JSON.parse(readFileSync(iconsJsonPath, 'utf8'));
 const bySlug = new Map(catalog.map((icon) => [icon.slug, icon]));
 
-/** Slugs supplied by hand (brand-kit files, FAISS glyph) in stack-icons.extra.json. */
+/** Slugs supplied by hand (brand-kit files) in stack-icons.extra.json. */
 const extraIcons = JSON.parse(readFileSync(extraPath, 'utf8'));
 const extraSlugs = new Set(Object.keys(extraIcons));
 for (const [slug, icon] of Object.entries(extraIcons)) {

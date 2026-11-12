@@ -5,7 +5,7 @@ import { content, type Project } from '@/content/content';
 
 type Props = { project: Project; index: number };
 
-const linkOrder = ['live', 'code', 'paper'] as const;
+const linkOrder = ['live', 'code', 'evaluation', 'paper'] as const;
 
 /** A work card: always straight, always the same red shadow (B7). `index` only sets the number. */
 export function ProjectCard({ project, index }: Props) {

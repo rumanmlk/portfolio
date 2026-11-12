@@ -3,7 +3,7 @@ import { SITE_URL } from '@/lib/env';
 
 /** B16: Person schema. Rendered inline; `<` is escaped so the JSON cannot close the tag. */
 export function JsonLd() {
-  const { site, socials, stack } = content;
+  const { site, socials, stack, education } = content;
   const data = {
     '@context': 'https://schema.org',
     '@type': 'Person',
@@ -16,6 +16,7 @@ export function JsonLd() {
     sameAs: [socials.github, socials.linkedin],
     worksFor: { '@type': 'Organization', name: site.employer.name, url: site.employer.url },
     address: { '@type': 'PostalAddress', addressLocality: 'Lahore', addressCountry: 'PK' },
+    alumniOf: education.map((edu) => ({ '@type': 'EducationalOrganization', name: edu.school })),
     knowsAbout: stack.flatMap((group) => group.items.map((item) => item.name)),
   };
   return (

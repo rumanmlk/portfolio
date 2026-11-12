@@ -1,6 +1,6 @@
 import { MobileDetails } from '@/components/sections/MobileDetails';
 import { Reveal, RevealLines } from '@/components/ui/Reveal';
-import { content, type Role } from '@/content/content';
+import { content } from '@/content/content';
 
 /** 'YYYY-MM' to 'Mar 2026'. */
 function label(ym: string) {
@@ -11,7 +11,7 @@ function label(ym: string) {
   });
 }
 
-function Dates({ role }: { role: Role }) {
+function Dates({ role }: { role: { start: string; end: string } }) {
   return (
     <>
       <time dateTime={role.start}>{label(role.start)}</time> {content.ui.dateRangeSeparator}{' '}
@@ -58,6 +58,28 @@ export function Experience() {
           </Reveal>
         ))}
       </ol>
+      {content.education.length > 0 ? (
+        <div className="education-group" role="group" aria-labelledby="education-title">
+          <h3 id="education-title" className="education-label">
+            {content.ui.educationLabel}
+          </h3>
+          <ul className="education-list">
+            {content.education.map((edu) => (
+              <Reveal as="li" key={edu.school} className="education-row">
+                <p className="experience-dates mono">
+                  <Dates role={edu} />
+                </p>
+                <div className="experience-body">
+                  <h4 className="experience-role">{edu.degree}</h4>
+                  <p className="experience-company mono text-muted">
+                    {edu.school} <span className="whitespace-nowrap">({edu.shortName})</span>
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </section>
   );
 }

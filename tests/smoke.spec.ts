@@ -19,12 +19,12 @@ test.describe('content without JavaScript', () => {
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('article.project-card')).toHaveCount(content.projects.length);
     await expect(page.locator('.experience-row')).toHaveCount(content.experience.length);
+    await expect(page.locator('.education-row')).toHaveCount(content.education.length);
     await expect(page.locator('#stack')).toBeVisible();
     for (const group of content.stack) {
       for (const item of group.items) {
-        await expect(page.locator('#stack .stack-name').filter({ hasText: item.name })).toHaveCount(
-          1,
-        );
+        const exact = new RegExp(`^${item.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
+        await expect(page.locator('#stack .stack-name').filter({ hasText: exact })).toHaveCount(1);
       }
     }
     await expect(page.locator('#contact')).toBeVisible();

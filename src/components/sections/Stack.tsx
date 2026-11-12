@@ -10,8 +10,7 @@ type StackIcon = { hex: string; hexOnDark: string; path: string; viewBox?: strin
 
 /**
  * Logos are Simple Icons (https://simpleicons.org) plus hand-supplied marks in
- * stack-icons.extra.json: official brand-kit files for OpenAI and xAI, and a generic glyph for
- * FAISS (not a brand mark). One-color marks: ink on light, cream on dark. Trademarks belong to
+ * stack-icons.extra.json: official brand-kit files for OpenAI and xAI. One-color marks: ink on light, cream on dark. Trademarks belong to
  * their owners. Paths are inlined so hover color works (external <use href="/sprite.svg#…">
  * often ignores CSS currentColor).
  */

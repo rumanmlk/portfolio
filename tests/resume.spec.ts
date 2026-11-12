@@ -120,7 +120,7 @@ test.describe('resume dialog', () => {
       .locator('a[data-resume-trigger]')
       .evaluateAll((els) => els.map((el) => el.getAttribute('href')));
     expect(hrefs.length).toBeGreaterThanOrEqual(3);
-    for (const href of hrefs) expect(href).toBe('/resume.pdf?v=5');
+    for (const href of hrefs) expect(href).toBe('/resume.pdf?v=6');
   });
 });
 
